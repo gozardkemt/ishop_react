@@ -1,133 +1,163 @@
 import React from 'react';
 import './App.css';
 
-function App(props) {
+class App extends React.Component {
 
-  return (
-    <>
-	  < Header />
-	  < Selection categories={props.categories} />
-	  < Content categories={props.categories} products={props.products} />
-    </>
-  );
+	render() {
+
+		  return (
+		    <>
+			  < Header />
+			  < Selection categories={this.props.categories} />
+			  < Content categories={this.props.categories} products={this.props.products} />
+		    </>
+		  );
+  	}
 }
 
 export default App;
 
-export function Header() {
+export class Header extends React.Component {
 
-	const headerStyle = { fontSize:'3em', width:'100%', textAlign: 'center', background: 'skyblue' };
+	render() {
+		const headerStyle = { fontSize:'3em', width:'100%', textAlign: 'center', background: 'skyblue' };
 
-	return (
+		return (
 
-		<header style={headerStyle}>
-		  iStore Slovakia w/React
-		</header>
+			<header style={headerStyle}>
+			  iStore Slovakia w/React
+			</header>
 
-	)
+		)
+	}
 }
 
-export function Selection(props) {
+export class Selection extends React.Component {
 
-	return (
+	render() {
+		return (
 
-		<select className='options'>
-		  <option value='all' defaultValue>Všetky</option>
-		  < Options categories={props.categories} />
-		</select>
+			<select className='options'>
+			  <option value='all' defaultValue>Všetky</option>
+			  < Options categories={this.props.categories} />
+			</select>
 
-	)
+		)
+	}
 }
 
-export function Options(props) {
+export class Options extends React.Component {
 
-	return (
-		<>
-		{
-			props.categories.map( c => <option key={c.id} value={c.name.toLowerCase()}>{c.name}</option> )
-		}
-		</>
-	)
-}
+	render() {
 
-export function Content(props) {
-
-	const contentStyle = {	display:'grid', gridTemplateColumns:'repeat(3, 1fr)' };
-
-	return (
-
-		<main id='content' style={contentStyle} >
-			< ProductItem categories={props.categories} products={props.products} />
-		</main>
-
-	)
-}
-
-export function ProductItem(props) {
-
-	let products = props.products;
-	const productStyle = { border:'10px solid rgba(90,90,90,0.3)', margin:'5px' }
-
-	return (
-		<>
+		return (
+			<>
 			{
-				products.map( p =>
-						<div key={p.src} className='product' style={productStyle}>
-							< ProductName key={p.name} name={p.name} />
-							< ProductPrice key={p.price} price={p.price} />
-							< ProductCategory key={p.src} categoryId={p.categoryId} categories={props.categories} />
-							< ProductImg key={p.src} src={p.thumbnail} />
-						</div>
-
+				this.props.categories.map( c =>
+					<option key={c.id} value={c.name.toLowerCase()}>{c.name}</option>
 				)
 			}
-		</>
-	)
+			</>
+		)
+	}
 }
 
-export function ProductName(props) {
+export class Content extends React.Component {
 
-	return (
+	render() {
+		const contentStyle = {	display:'grid', gridTemplateColumns:'repeat(3, 1fr)' };
 
-		<p className='name'>
-			Model: {props.name}
-		</p>
+		return (
 
-	)
+			<main id='content' style={contentStyle} >
+				< ProductItem categories={this.props.categories} products={this.props.products} />
+			</main>
+
+		)
+	}
 }
 
-export function ProductPrice(props) {
+export class ProductItem extends React.Component {
 
-	return (
+	render() {
 
-		<p className='price'>
-			Cena: {props.price} €
-		</p>
+		let products = this.props.products;
+		let categories = this.props.categories;
+		const productStyle = { border:'10px solid rgba(90,90,90,0.3)', margin:'5px' }
 
-	)
+		return (
+			<>
+				{
+					products.map( p =>
+							<div key={p.src} className='product' style={productStyle}>
+								< ProductName key={p.name} name={p.name} />
+								< ProductPrice key={p.price} price={p.price} />
+								< ProductCategory key={p.src} categoryId={p.categoryId} categories={categories} />
+								< ProductImg key={p.src} src={p.thumbnail} />
+							</div>
+
+					)
+				}
+			</>
+		)
+	}
 }
 
-export function ProductCategory(props) {
+export class ProductName extends React.Component {
 
-	let id = props.categoryId;
-	let categories = props.categories;
-	let category = categories.filter( c => c.id === id );
-	let categoryName = category[0].name;
+	render() {
 
-	return (
+		return (
 
-		<p className={id}>
-			Kategória produktu: { categoryName }
-		</p>
+			<p className='name'>
+				Model: {this.props.name}
+			</p>
 
-	)
+		)
+	}
 }
 
-export function ProductImg(props) {
+export class ProductPrice extends React.Component {
 
-	return (
+	render() {
 
-		<img alt='foto' src={props.src}/>
+		return (
 
-	)
+			<p className='price'>
+				Cena: {this.props.price} €
+			</p>
+
+		)
+	}
+}
+
+export class ProductCategory extends React.Component {
+
+	render() {
+
+		let id = this.props.categoryId;
+		let categories = this.props.categories;
+		let category = categories.filter( c => c.id === id );
+		let categoryName = category[0].name;
+
+		return (
+
+			<p className={id}>
+				Kategória produktu: { categoryName }
+			</p>
+
+		)
+	}
+}
+
+export class ProductImg extends React.Component {
+
+	render() {
+
+		return (
+
+			<img alt='foto' src={this.props.src}/>
+
+		)
+	}
 }
