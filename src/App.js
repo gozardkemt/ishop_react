@@ -10,7 +10,8 @@ export default class App extends React.Component {
 		super(props)
 
 		this.state = {
-			activeCategoryId: '0'
+			activeCategoryId: '0',
+			shoppingCard: []
 		}
 	}
 
@@ -22,15 +23,15 @@ export default class App extends React.Component {
 	}
 
 	render() {
-		  const {products, categories, } = this.props;
-		  const {activeCategoryId} = this.state;
+		const {products, categories} = this.props;
+		const { activeCategoryId:id } = this.state;
 
-		  return (
+		return (
 		    <>
 			  < Header />
 			  < Selection onChange={this.changeActiveCategoryId} categories={categories} />
-			  < Content activeCategoryId={activeCategoryId} categories={categories} products={products} />
+			  < Content activeCategoryId={id} categories={categories} products={products} />
 		    </>
-		  )
+		)
   	}
 }

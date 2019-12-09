@@ -9,6 +9,10 @@ export const categories = [
         "id": "2"
     },
     {
+        "name": "Apple Watch",
+        "id": "4"
+    },
+    {
         "name": "Other",
         "id": "3"
     }
