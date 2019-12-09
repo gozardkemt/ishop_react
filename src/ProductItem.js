@@ -58,10 +58,9 @@ class ProductCategory extends React.Component {
 
 	render() {
 
-		let id = this.props.categoryId;
-		let categories = this.props.categories;
-		let category = categories.filter( c => c.id === id );
-		let categoryName = category[0].name;
+		const { categoryId:id , categories } = this.props;
+		const category = categories.find( c => c.id === id );
+		const categoryName = category.name;
 
 		return (
 
