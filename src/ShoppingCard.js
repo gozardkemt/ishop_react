@@ -8,7 +8,8 @@ export default class ShoppingCard extends React.Component {
 
 		const ulStyle = {
 			fontSize:'0.85rem',
-			listStyle: 'none'
+			listStyle: 'none',
+			padding: 'unset'
 		};
 
 		const divStyle = {
@@ -40,21 +41,26 @@ class ShoppingCardItem extends React.Component {
 		const liStyle = {
 			display: 'flex',
 			alignItems: 'center',
-			width: '10rem',
+			width: '13rem',
 		}
 
-		const {shoppingCard:card, onClick} = this.props;
-		const handleSum = (sum, i) => sum + parseInt(i.price);
+		const margin = {
+			margin: '1rem'
+		}
+
+		const handleSum = (sum, i) => sum + parseInt(i.price * i.count);
+		const {shoppingCard, onClick} = this.props;
 
 		return (
 			<>
-				{card.map(i =>
+				{shoppingCard.map(i =>
 					<li style={liStyle}>
-						<p>{i.name} Cena: {i.price}€</p>
-						<span data-name={i.name} data-price={i.price} onClick={onClick}>X</span>
+						<b style={margin}>{i.count}</b>
+						<p>{i.name} Cena: {i.price * i.count}€</p>
+						<span data-name={i.name} data-price={i.price * i.count} onClick={onClick} style={margin} >X</span>
 					</li>
 				)}
-				<li>Cena spolu: {card.reduce(handleSum, 0)}€</li>
+				<li style={margin}>Cena spolu: {shoppingCard.reduce(handleSum, 0)}€</li>
 			</>
 		)
 	}
