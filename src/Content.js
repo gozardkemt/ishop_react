@@ -13,7 +13,7 @@ export default class Content extends React.Component {
 		if (filteredProducts.length < 1) {
 
 			return  (
-				<div>
+				<div style={{textAlign:'center'}}>
 					<h3>Podmienky bohužial nespĺňa žiadny produkt</h3>
 				</div>
 			);
