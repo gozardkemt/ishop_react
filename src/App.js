@@ -99,16 +99,22 @@ export default class App extends React.Component {
 		})
 	}
 
+	emptyShoppingCard = () => {
+		this.setState({
+			shoppingCard: []
+		})
+	}
+
 	render() {
 		const {products, categories} = this.props;
 		const {activeCategoryId:id, shoppingCard:card} = this.state;
-		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick} = this;
+		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard} = this;
 
 		return (
 		    <>
 			  < Header />
 			  < Selection onChange={changeActiveCategoryId} categories={categories} />
-			  < ShoppingCard shoppingCard={card} onClick={handleRemoveClick} />
+			  < ShoppingCard emptyShoppingCard={emptyShoppingCard} shoppingCard={card} onClick={handleRemoveClick} />
 			  < Content card={card} onClick={handleButtonClick} activeCategoryId={id} categories={categories} products={products} />
 		    </>
 		)

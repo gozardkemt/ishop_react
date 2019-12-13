@@ -4,7 +4,7 @@ export default class ShoppingCard extends React.Component {
 
 	render() {
 
-		const {shoppingCard, onClick} = this.props;
+		const {shoppingCard, onClick, emptyShoppingCard} = this.props;
 
 		const ulStyle = {
 			fontSize:'0.85rem',
@@ -26,7 +26,7 @@ export default class ShoppingCard extends React.Component {
 			 	<div style={divStyle}>
 					<h4 style={{margin:'unset', textAlign:'center'}}>Váš nákupný košík:</h4>
 					<ul style = {ulStyle}>
-						<ShoppingCardItem shoppingCard={shoppingCard} onClick={onClick}/>
+						<ShoppingCardItem emptyShoppingCard={emptyShoppingCard} shoppingCard={shoppingCard} onClick={onClick}/>
 					</ul>
 				</div>
 		)
@@ -49,18 +49,19 @@ class ShoppingCardItem extends React.Component {
 		}
 
 		const handleSum = (sum, i) => sum + parseInt(i.price * i.count);
-		const {shoppingCard, onClick} = this.props;
+		const {shoppingCard, onClick, emptyShoppingCard} = this.props;
 
 		return (
 			<>
 				{shoppingCard.map(i =>
-					<li style={liStyle}>
+					<li key={i.name} style={liStyle}>
 						<b style={margin}>{i.count}</b>
 						<p>{i.name} Cena: {i.price * i.count}€</p>
 						<span data-name={i.name} data-price={i.price * i.count} onClick={onClick} style={margin} >X</span>
 					</li>
 				)}
 				<li style={margin}>Cena spolu: {shoppingCard.reduce(handleSum, 0)}€</li>
+				<li style={margin} onClick={emptyShoppingCard}>Vyprázdniť košík</li>
 			</>
 		)
 	}
