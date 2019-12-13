@@ -95,7 +95,7 @@ export default class App extends React.Component {
 
 	removeItemFromCard = clicked => {
 		this.setState({
-			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name && p.price !== clicked.price)
+			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.price !== clicked.price)
 		})
 	}
 
