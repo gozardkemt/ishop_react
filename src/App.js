@@ -26,6 +26,7 @@ export default class App extends React.Component {
 		return {
 			name: e.currentTarget.dataset.name,
 			price: e.currentTarget.dataset.price,
+			src: e.currentTarget.dataset.src,
 			count: 1
 		}
 	}
@@ -34,7 +35,7 @@ export default class App extends React.Component {
 		const {shoppingCard} = this.state;
 
 		const findProduct = (p) => {
-			return p.name === product.name;
+			return (p.name === product.name) && (p.src === product.src);
 		}
 
 		return shoppingCard.findIndex(findProduct);
@@ -60,7 +61,7 @@ export default class App extends React.Component {
 	increaseCount = index => {
 		this.setState(
 			state => {
-				state.shoppingCard.forEach( (p,i) => { if (i === index) { p.count++ } else return } )
+				state.shoppingCard.forEach((p,i) => { if (i === index) { p.count++ } else return })
 
 				return {
 					shoppingCard: state.shoppingCard
@@ -84,7 +85,7 @@ export default class App extends React.Component {
 	decreaseCount = index => {
 		this.setState(
 			state => {
-				state.shoppingCard.forEach( (p,i) => { if (i === index) { p.count-- } else return } )
+				state.shoppingCard.forEach((p,i) => {if (i === index) { p.count-- } else return })
 
 				return {
 					shoppingCard: state.shoppingCard
@@ -95,7 +96,7 @@ export default class App extends React.Component {
 
 	removeItemFromCard = clicked => {
 		this.setState({
-			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.price !== clicked.price)
+			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.src !== clicked.src)
 		})
 	}
 

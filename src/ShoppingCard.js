@@ -48,7 +48,7 @@ class ShoppingCardItem extends React.Component {
 			margin: '1rem'
 		}
 
-		const handleSum = (sum, i) => sum + parseInt(i.price * i.count);
+		const sum = (sum, i) => sum + parseInt(i.price * i.count);
 		const {shoppingCard, onClick, emptyShoppingCard} = this.props;
 
 		return (
@@ -57,10 +57,10 @@ class ShoppingCardItem extends React.Component {
 					<li key={i.name} style={liStyle}>
 						<b style={margin}>{i.count}</b>
 						<p>{i.name} Cena: {i.price * i.count}€</p>
-						<span data-name={i.name} data-price={i.price * i.count} onClick={onClick} style={margin} >X</span>
+						<span data-src={i.src} data-name={i.name} data-price={i.price * i.count} onClick={onClick} style={margin}>X</span>
 					</li>
 				)}
-				<li style={margin}>Cena spolu: {shoppingCard.reduce(handleSum, 0)}€</li>
+				<li style={margin}>Cena spolu: {shoppingCard.reduce(sum, 0)}€</li>
 				<li style={margin} onClick={emptyShoppingCard}>Vyprázdniť košík</li>
 			</>
 		)

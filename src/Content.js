@@ -70,7 +70,7 @@ class Button extends React.Component {
 
 	render() {
 
-		const {name, price} = this.props.product;
+		const {name, price, thumbnail} = this.props.product;
 		const {onClick, card} = this.props;
 		let buttonText = 'Vložte do košíka';
 
@@ -78,7 +78,7 @@ class Button extends React.Component {
 			buttonText = 'Vložte ďalší kus do košíka';
 		};
 
-		return <button data-name={name} data-price={price} onClick={onClick} type='button'>{buttonText}</button>
+		return <button data-src={thumbnail} data-name={name} data-price={price} onClick={onClick} type='button'>{buttonText}</button>
 
 	}
 }
