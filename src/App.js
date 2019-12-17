@@ -3,6 +3,7 @@ import Header from './Header.js';
 import Content from './Content.js';
 import Selection from './Selection.js';
 import ShoppingCard from './ShoppingCard.js';
+import ShopForm from './ShopForm.js';
 import './App.css';
 
 export default class App extends React.Component {
@@ -11,6 +12,7 @@ export default class App extends React.Component {
 		super(props)
 
 		this.state = {
+			activeShopForm: false,
 			activeCategoryId: '0',
 			shoppingCard: []
 		}
@@ -106,17 +108,50 @@ export default class App extends React.Component {
 		})
 	}
 
+	openForm = () => {
+		this.setState({
+			activeShopForm: true
+		})
+	}
+
+	closeForm = () => {
+		this.setState({
+			activeShopForm: false
+		})
+	}
+
 	render() {
 		const {products, categories} = this.props;
-		const {activeCategoryId:id, shoppingCard:card} = this.state;
-		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard} = this;
+		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form} = this.state;
+		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard, closeForm, openForm} = this;
 
 		return (
 		    <>
-			  < Header />
-			  < Selection onChange={changeActiveCategoryId} categories={categories} />
-			  < ShoppingCard emptyShoppingCard={emptyShoppingCard} shoppingCard={card} onClick={handleRemoveClick} />
-			  < Content card={card} onClick={handleButtonClick} activeCategoryId={id} categories={categories} products={products} />
+			  < Header
+			  	/>
+			  < Selection
+					onChange={changeActiveCategoryId}
+					categories={categories}
+				/>
+			  < ShoppingCard
+			  		emptyShoppingCard={emptyShoppingCard}
+					shoppingCard={card}
+					onClick={handleRemoveClick}
+					openForm={openForm}
+
+				/>
+			  < ShopForm
+			  		shoppingCard={card}
+					activeShopForm={form}
+					closeForm={closeForm}
+			  />
+			  < Content
+			  		card={card} 
+			  		onClick={handleButtonClick}
+					activeCategoryId={id}
+					categories={categories}
+					products={products}
+				/>
 		    </>
 		)
   	}

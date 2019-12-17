@@ -1,16 +1,14 @@
 import React from 'react';
 
-export default class Header extends React.Component {
+export default function Header() {
 
-	render() {
-		const headerStyle = { fontSize:'3em', width:'100%', textAlign: 'center', background: 'skyblue' };
+	const headerStyle = { fontSize:'3em', width:'100%', textAlign: 'center', background: 'skyblue' };
 
-		return (
+	return (
 
-			<header style={headerStyle}>
-			  iStore Slovakia w/React
-			</header>
+		<header style={headerStyle}>
+		  iStore Slovakia w/React
+		</header>
 
-		)
-	}
+	)
 }

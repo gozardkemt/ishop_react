@@ -5,10 +5,12 @@ export default class Content extends React.Component {
 	render() {
 
 		const {products, categories, activeCategoryId, onClick, card} = this.props;
-		const contentStyle = {display:'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridTemplateRows: 'repeat(3, min-content)'};
-
-		let filteredProducts = products.filter(p => p.categoryId === activeCategoryId);
-		if (activeCategoryId === '0') { filteredProducts = products };
+		const contentStyle = {
+			display:'grid',
+			gridTemplateColumns: 'repeat(5, 1fr)',
+			gridTemplateRows: 'repeat(3, min-content)'
+		};
+		const filteredProducts = activeCategoryId === '0' ? products : products.filter(p => p.categoryId === activeCategoryId);
 
 		if (filteredProducts.length < 1) {
 
@@ -40,30 +42,26 @@ class Product extends React.Component {
 		if (!thumbnail) {return null}
 
 		return (
-			<div key={name} className='product' style={productStyle}>
-				<p className='name'>Model: {name} </p>
-				<p className='price'>Cena: {price}€</p>
+			<article key={name} className='product' style={productStyle}>
+				<strong className='name' dangerouslySetInnerHTML={{__html: name}}></strong>
+				<span className='price'>Cena: {price}€</span>
 				< ProductCategory categoryId={categoryId} categories={categories}/>
 				<img alt='foto' src={thumbnail} style={imgStyle}/>
 				< Button card={card} product={product} onClick={onClick} />
-			</div>
+			</article>
 		)
 	}
 }
 
-class ProductCategory extends React.Component {
+export const ProductCategory = ({categoryId:id, categories}) => {
 
-	render() {
+	let category = categories.find(c => c.id === id);
 
-		const { categoryId:id, categories } = this.props;
-		let category = categories.find( c => c.id === id );
-
-		return (
-			<p className={id}>
-				Kategória produktu: { category.name }
-			</p>
-		)
-	}
+	return (
+		<p className={id}>
+			Kategória produktu: { category.name }
+		</p>
+	)
 }
 
 class Button extends React.Component {
@@ -72,13 +70,13 @@ class Button extends React.Component {
 
 		const {name, price, thumbnail} = this.props.product;
 		const {onClick, card} = this.props;
-		let buttonText = 'Vložte do košíka';
 
-		if (card.some(p => p.name === name)) {
-			buttonText = 'Vložte ďalší kus do košíka';
-		};
+		const buttonText = card.some(p => p.name === name) ? 'Vložte ďalší kus do košíka' : 'Vložte do košíka';
 
-		return <button data-src={thumbnail} data-name={name} data-price={price} onClick={onClick} type='button'>{buttonText}</button>
-
+		return (
+			<button data-src={thumbnail} data-name={name} data-price={price} onClick={onClick} type='button'>
+				{buttonText}
+			</button>
+		)
 	}
 }
