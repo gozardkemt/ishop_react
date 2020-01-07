@@ -8,7 +8,7 @@ export default class Content extends React.Component {
 		const contentStyle = {
 			display:'grid',
 			gridTemplateColumns: 'repeat(5, 1fr)',
-			gridTemplateRows: 'repeat(3, min-content)'
+			gridTemplateRows: 'repeat(3, min-content)',
 		};
 		const filteredProducts = activeCategoryId === '0' ? products : products.filter(p => p.categoryId === activeCategoryId);
 

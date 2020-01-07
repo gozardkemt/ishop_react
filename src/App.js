@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './Header.js';
 import Content from './Content.js';
-import Selection from './Selection.js';
+import FilterBar from './FilterBar.js';
 import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
 
@@ -12,9 +12,16 @@ export default class App extends React.Component {
 
 		this.state = {
 			activeShopForm: false,
+			activeFilterBar: false,
 			activeCategoryId: '0',
 			shoppingCard: []
 		}
+	}
+
+	toggleFilterBar = () => {
+		this.setState({
+			activeFilterBar: !this.state.activeFilterBar,
+		})
 	}
 
 	changeActiveCategoryId = e => {
@@ -121,14 +128,16 @@ export default class App extends React.Component {
 
 	render() {
 		const {products, categories} = this.props;
-		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form} = this.state;
-		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard, closeForm, openForm} = this;
+		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter} = this.state;
+		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard, closeForm, openForm, toggleFilterBar} = this;
 
 		return (
 		    <>
 			  < Header
+			  		onChange={toggleFilterBar}
 			  	/>
-			  < Selection
+			  < FilterBar
+			  		activeFilterBar={filter}
 					onChange={changeActiveCategoryId}
 					categories={categories}
 				/>

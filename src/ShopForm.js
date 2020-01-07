@@ -25,7 +25,7 @@ export default class ShopForm extends React.Component {
 	isAllValid = () => {
 		const {name, email, adress, psc} = this.state;
 		const {validateName, validateEmail, validateAdress, validatePsc} = this;
-		
+
 		return validateName(name) && validateEmail(email) && validateAdress(adress) && validatePsc(psc);
 	}
 
