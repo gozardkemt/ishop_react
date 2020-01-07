@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export default class ShopForm extends React.Component {
 
 	constructor(props) {
@@ -9,7 +8,9 @@ export default class ShopForm extends React.Component {
 		this.state = {
 			name: '',
 			email: '',
-			adress: ''
+			adress: '',
+			psc: '',
+			isSent: false,
 		}
 	}
 
@@ -17,7 +18,44 @@ export default class ShopForm extends React.Component {
 		const type = e.currentTarget.dataset.type;
 	    this.setState({
 			[type]: e.currentTarget.value,
+			isSent: false
 		});
+	}
+
+	isAllValid = () => {
+		const {name, email, adress, psc} = this.state;
+		const {validateName, validateEmail, validateAdress, validatePsc} = this;
+		
+		return validateName(name) && validateEmail(email) && validateAdress(adress) && validatePsc(psc);
+	}
+
+	validateName = (t) => t.match(/(\w.+\s).+/i) ? true : false;
+	validateEmail = (t) => {
+		const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return t.match(re) ? true : false;
+	}
+	validateAdress = (t) => t.match(/[a-zA-Z0-9]/) ? true : false;
+	validatePsc = (t) => t.match(/[0-9]/) ? true : false;
+
+	submitForm = () => {
+		this.setState({
+			isSent: true,
+		})
+	}
+
+	unsubmitForm = () => {
+		this.setState({
+			isSent: false,
+		})
+	}
+
+	resetPerson = () => {
+		this.setState({
+			name: '',
+			email: '',
+			adress: '',
+			psc: '',
+		})
 	}
 
 	render() {
@@ -38,57 +76,155 @@ export default class ShopForm extends React.Component {
 		}
 
 		const xStyle = {
-			alignSelf: 'flex-end',
-    		padding: '1rem',
-    		marginTop: '-6rem'
+			position: 'absolute',
+			top: '0',
+			left: '0',
+			margin: '0.5rem',
+			padding: '0 0.5rem',
+			color: 'white'
 		}
 
 		const {closeForm} = this.props;
-		const {adress, email, name} = this.state;
-		const {handleTyping} = this;
+		const {adress, email, name, psc, isSent} = this.state;
+		const {
+			handleTyping,
+			submitForm,
+			unsubmitForm,
+			resetPerson,
+			validateName,
+			validateEmail,
+			validateAdress,
+			validatePsc,
+			isAllValid
+		} = this;
+
+		const closeShopForm = () => {
+			closeForm();
+			unsubmitForm();
+			resetPerson()
+		};
+
+		const clearShopForm = () => {
+			unsubmitForm();
+			resetPerson()
+		};
 
 		return (
 				<form style={formStyle}>
-					<b style={xStyle} onClick={closeForm}>X</b>
+					< Comfirmation
+						adress={adress}
+						name={name}
+						email={email}
+						isReady={!isAllValid() || !isSent}
+						/>
+					<b style={xStyle} onClick={closeShopForm}>X</b>
 					<label>
-						Meno:
-						<input onKeyUp={handleTyping} data-type={'name'} />
 						< ErrorMessage
 							value={name}
-							errorText={'Vaše meno'}
+							isSent={isSent}
+							type={'meno'}
+							isValid={validateName(name)}
+							isAllValid={isAllValid()}
+						/>
+						< Input
+							value={name}
+							onKeyUp={handleTyping}
+							type={'name'}
+							isReady={isAllValid() && isSent}
 						/>
 					</label>
 					<label>
-						Email:
-						<input onKeyUp={handleTyping} data-type={'email'} />
 						< ErrorMessage
 							value={email}
-							errorText={'Váš email'}
+							isSent={isSent}
+							type={'email'}
+							isValid={validateEmail(email)}
+							isAllValid={isAllValid()}
 						/>
+						< Input
+							value={email}
+							onKeyUp={handleTyping}
+							type={'email'}
+							isReady={isAllValid() && isSent}
+							/>
 					</label>
 					<label>
-						Adresa:
-						<input onKeyUp={handleTyping} data-type={'adress'} />
 						< ErrorMessage
 							value={adress}
-							errorText={'Vašu adresu'}
+							isSent={isSent}
+							type={'adress'}
+							isValid={validateAdress(adress)}
+							isAllValid={isAllValid()}
 						/>
+						< Input
+							value={adress}
+							onKeyUp={handleTyping}
+							type={'adress'}
+							isReady={isAllValid() && isSent}
+ 						/>
 					</label>
-					<button type='submit'>Odoslať objednávku</button>
+					<label>
+						< ErrorMessage
+							value={psc}
+							isSent={isSent}
+							type={'psc'}
+							isValid={validatePsc(psc)}
+							isAllValid={isAllValid()}
+						/>
+						< Input
+							value={psc}
+							onKeyUp={handleTyping}
+							type={'psc'}
+							isReady={isAllValid() && isSent}
+ 						/>
+					</label>
+					< Submit
+						submitForm={submitForm}
+						isReady={isAllValid() && isSent}
+						closeShopForm={closeShopForm}
+					/>
+					< ClearForm
+						isReady={isAllValid() && isSent}
+						clearShopForm={clearShopForm}
+					/>
 				</form>
 		)
 	}
 }
 
-class ErrorMessage extends React.Component {
+function Input({onKeyUp, isReady, type, value}) {
 
-	render() {
+	return !isReady ? <input value={value} type='text' onChange={onKeyUp} data-type={type}></input> : null;
+}
 
-		const {errorText, value} = this.props;
+function ErrorMessage({type, value, isSent, isValid, isAllValid}) {
 
-		if (value.length > 3) { return null }
+	if (isAllValid && isSent) { return null };
 
-		return <span style={{color:'red'}}> Prosím vyplňte {errorText}</span>
+	return !isValid && isSent ? <b> Prosím vyplňte pole {type}: </b> : <b>{type}: </b>;
+}
 
+function Comfirmation({adress, email, name, isReady}) {
+
+	const text = `Vážený ${name}, odoslali sme objednávku na ${adress}, potvrdenie ste dostali na emailovú adresu ${email}. Ďakujeme za nákup`;
+
+	return  !isReady ? <b style={{textAlign:'center'}}>{text}</b> : null;
+}
+
+function Submit({submitForm, isReady, closeShopForm}) {
+
+	const btnStyle = {
+		margin: '0.5rem',
+		padding: '0.5rem 1rem'
 	}
+
+	const text = isReady ? 'Zatvoriť formulár' : 'Odoslať objednávku';
+	const func = isReady ? closeShopForm : submitForm;
+
+	return <button style={btnStyle} onClick={func} type='button'>{text}</button>
+}
+
+function ClearForm({clearShopForm, isReady}) {
+
+	return !isReady ? <button onClick={clearShopForm} type='button'>Vyčisti formulár</button> : null;
 }

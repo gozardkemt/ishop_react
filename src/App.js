@@ -4,7 +4,6 @@ import Content from './Content.js';
 import Selection from './Selection.js';
 import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
-import './App.css';
 
 export default class App extends React.Component {
 
