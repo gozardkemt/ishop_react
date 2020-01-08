@@ -1,10 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class ShoppingCard extends React.Component {
 
 	render() {
 
 		const {shoppingCard, onClick, emptyShoppingCard, openForm} = this.props;
+
+		ShoppingCard.propTypes = {
+			shoppingCard: PropTypes.array,
+			onClick: PropTypes.func,
+			emptyShoppingCard: PropTypes.func,
+			openForm: PropTypes.func
+		}
 
 		if (shoppingCard.length < 1) { return null }
 

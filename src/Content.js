@@ -1,10 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class Content extends React.Component {
 
 	render() {
 
 		const {products, categories, activeCategoryId, onClick, card, priceRange, textQuery} = this.props;
+
+		Content.propTypes = {
+			products: PropTypes.array,
+			categories: PropTypes.array,
+			activeCategoryId: PropTypes.string,
+			onClick: PropTypes.func,
+			card: PropTypes.array,
+			priceRange: PropTypes.array,
+			textQuery: PropTypes.string,
+		}
+
 		const contentStyle = {
 			display:'grid',
 			gridTemplateColumns: 'repeat(5, 1fr)',
@@ -37,26 +49,38 @@ export default class Content extends React.Component {
 class Product extends React.Component {
 
 	render() {
-		const productStyle = {border:'3px solid lightgray', margin:'10px', display:'flex', flexDirection:'column', justifyContent:'space-between', alignItems: 'center'}
-		const imgStyle = {maxWidth:'100%', maxHeight:'100%', height:'min-content'}
 
 		const {product, categories, onClick, card} = this.props;
 		const {name, price, categoryId, thumbnail} = product;
+
 		if (!thumbnail) {return null}
 
+		const imgStyle = {maxWidth:'100%', maxHeight:'100%', height:'min-content'}
+
 		return (
-			<article key={name} className='product' style={productStyle}>
+			< ProductWrapper>
 				<strong className='name' dangerouslySetInnerHTML={{__html: name}}></strong>
 				<span className='price'>Cena: {price}€</span>
 				< ProductCategory categoryId={categoryId} categories={categories}/>
 				<img alt='foto' src={thumbnail} style={imgStyle}/>
 				< Button card={card} product={product} onClick={onClick} />
-			</article>
+			< /ProductWrapper>
 		)
 	}
+};
+
+const ProductWrapper = (props) => {
+
+	const productStyle = { border:'3px solid lightgray', margin:'10px', display:'flex', flexDirection:'column', justifyContent:'space-between', alignItems: 'center' };
+
+	return (
+		<article className='product' style={productStyle}>
+			{props.children}
+		</article>
+	)
 }
 
-export const ProductCategory = ({categoryId:id, categories}) => {
+const ProductCategory = ({categoryId:id, categories}) => {
 
 	let category = categories.find(c => c.id === id);
 

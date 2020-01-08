@@ -1,6 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function Header({onChange, activeFilterBar}) {
+
+	Header.propTypes = {
+		onChange: PropTypes.func,
+		activeFilterBar: PropTypes.bool,
+	}
 
 	const headerStyle = {  width:'100%', background: 'skyblue', display: 'flex', flexDirection: 'row', justifyContent: 'center' };
 	const headlineStyle = { fontSize:'3em'};

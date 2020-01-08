@@ -1,10 +1,22 @@
 import React from 'react';
 import Selection from './Selection.js';
+import PropTypes from 'prop-types';
+
 
 export default class FilterBar extends React.Component {
 
 	render() {
 		const {categories, onChange, activeFilterBar, setPriceRange, clearAllFilters, setTextQuery, textQuery} = this.props;
+
+		FilterBar.propTypes = {
+			categories: PropTypes.array,
+			onChange: PropTypes.func,
+			activeFilterBar: PropTypes.bool,
+			setPriceRange: PropTypes.object,
+			clearAllFilters: PropTypes.func,
+			setTextQuery: PropTypes.func,
+			textQuery: PropTypes.string,
+		}
 
 		if (!activeFilterBar) { return null };
 

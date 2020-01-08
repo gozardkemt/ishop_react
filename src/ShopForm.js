@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class ShopForm extends React.Component {
 
@@ -62,6 +63,10 @@ export default class ShopForm extends React.Component {
 
 		if (!this.props.activeShopForm) return null;
 
+		ShopForm.propTypes = {
+			closeForm: PropTypes.func,
+		}
+
 		const formStyle = {
 			height:'50%',
 			width: '50%',
@@ -78,7 +83,7 @@ export default class ShopForm extends React.Component {
 		const xStyle = {
 			position: 'absolute',
 			top: '0',
-			left: '0',
+			right: '0',
 			margin: '0.5rem',
 			padding: '0 0.5rem',
 			color: 'white'
