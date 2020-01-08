@@ -13,9 +13,19 @@ export default class App extends React.Component {
 		this.state = {
 			activeShopForm: false,
 			activeFilterBar: false,
+			priceRange: [0, Infinity],
 			activeCategoryId: '0',
 			shoppingCard: []
 		}
+	}
+
+	setPriceRange = () => {
+		const d = document;
+		const min = parseInt(d.getElementById('minFilter').value) || 0;
+		const max = parseInt(d.getElementById('maxFilter').value) || Infinity;
+		this.setState({
+			priceRange: [ min, max ]
+		})
 	}
 
 	toggleFilterBar = () => {
@@ -104,32 +114,43 @@ export default class App extends React.Component {
 
 	removeItemFromCard = clicked => {
 		this.setState({
-			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.src !== clicked.src)
+			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.src !== clicked.src),
+			activeShopForm: this.state.shoppingCard === [] ? this.state.activeShopForm : false
 		})
 	}
 
 	emptyShoppingCard = () => {
 		this.setState({
-			shoppingCard: []
-		})
-	}
-
-	openForm = () => {
-		this.setState({
-			activeShopForm: true
-		})
-	}
-
-	closeForm = () => {
-		this.setState({
+			shoppingCard: [],
 			activeShopForm: false
+		})
+	}
+
+	toggleForm = () => {
+		this.setState({
+			activeShopForm: !this.state.activeShopForm
+		})
+	}
+
+	clearAllFilters = () => {
+		this.setState({
+			priceRange: [],
+			activeCategoryId: '0',
 		})
 	}
 
 	render() {
 		const {products, categories} = this.props;
-		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter} = this.state;
-		const {changeActiveCategoryId, handleRemoveClick, handleButtonClick, emptyShoppingCard, closeForm, openForm, toggleFilterBar} = this;
+		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter, priceRange:range} = this.state;
+		const {
+			changeActiveCategoryId,
+			handleRemoveClick,
+			handleButtonClick,
+			emptyShoppingCard,
+			toggleForm,
+			toggleFilterBar,
+			setPriceRange
+		} = this;
 
 		return (
 		    <>
@@ -139,22 +160,24 @@ export default class App extends React.Component {
 			  < FilterBar
 			  		activeFilterBar={filter}
 					onChange={changeActiveCategoryId}
+					setPriceRange={setPriceRange}
 					categories={categories}
 				/>
 			  < ShoppingCard
 			  		emptyShoppingCard={emptyShoppingCard}
 					shoppingCard={card}
 					onClick={handleRemoveClick}
-					openForm={openForm}
+					openForm={toggleForm}
 
 				/>
 			  < ShopForm
 			  		shoppingCard={card}
 					activeShopForm={form}
-					closeForm={closeForm}
+					closeForm={toggleForm}
 			  />
 			  < Content
-			  		card={card} 
+			  		card={card}
+					priceRange={range}
 			  		onClick={handleButtonClick}
 					activeCategoryId={id}
 					categories={categories}

@@ -1,9 +1,10 @@
 import React from 'react';
+import Selection from './Selection.js';
 
 export default class FilterBar extends React.Component {
 
 	render() {
-		const {categories, onChange, activeFilterBar} = this.props;
+		const {categories, onChange, activeFilterBar, setPriceRange} = this.props;
 
 		if (!activeFilterBar) { return null };
 
@@ -14,6 +15,8 @@ export default class FilterBar extends React.Component {
 			marginTop: '0.5rem'
 		}
 
+		const btnStyle = {float: 'right'};
+
 		return (
 
 			<section style={sectionStyle}>
@@ -21,47 +24,30 @@ export default class FilterBar extends React.Component {
 					  onChange={onChange}
 					  categories={categories}
 				  />
-				<small> CENOVÉ ROZMEDZIE </small>
-				<input></input>
-				<input></input>
-				<button>Hľadať</button>
+				< PriceRange
+					  setPriceRange={setPriceRange}
+				  />
+				<button style={btnStyle} type='button'>Vymazať všetky filtre</button>
 			 </section>
 
 		)
 	}
-
 }
 
-class Selection extends React.Component {
-
-	render() {
-		const {categories, onChange} = this.props;
-
-		return (
-			<>
-				<small> KATEGÓRIE PRODUKTOV </small>
-				<select onChange={onChange} className='options'>
-					<option id='0' defaultValue>Všetky</option>
-					< Options categories={categories} />
-				</select>
-			</>
-		)
-	}
-
-}
-
-class Options extends React.Component {
+class PriceRange extends React.Component {
 
 	render() {
 
+		const {setPriceRange} = this.props;
+
 		return (
 			<>
-			{
-				this.props.categories.map( c =>
-					<option key={c.id} id={c.id}>{c.name}</option>
-				)
-			}
+				<label> Cenové rozmedzie </label>
+				<input id='minFilter'></input>
+				<input id='maxFilter'></input>
+				<button onClick={setPriceRange} type='button'>Hľadať</button>
 			</>
 		)
+
 	}
 }

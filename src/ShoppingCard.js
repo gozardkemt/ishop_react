@@ -15,16 +15,22 @@ export default class ShoppingCard extends React.Component {
 		};
 
 		const divStyle = {
+			marginTop: '10px',
 			backgroundColor: 'skyblue',
 			width: '15rem',
 			float:'right',
 			position:'relative',
-			top: '-2.5rem'
+		}
+
+		const h4Style = {
+			margin:'unset',
+			marginTop: '1rem',
+			textAlign:'center'
 		}
 
 		return (
 			 	<div style={divStyle}>
-					<h4 style={{margin:'unset', textAlign:'center'}}>Váš nákupný košík:</h4>
+					<h4 style={h4Style}>Váš nákupný košík:</h4>
 					<ul style = {ulStyle}>
 						<ShoppingCardItem
 							openForm={openForm}
