@@ -4,7 +4,7 @@ import Selection from './Selection.js';
 export default class FilterBar extends React.Component {
 
 	render() {
-		const {categories, onChange, activeFilterBar, setPriceRange} = this.props;
+		const {categories, onChange, activeFilterBar, setPriceRange, clearAllFilters, setTextQuery, textQuery} = this.props;
 
 		if (!activeFilterBar) { return null };
 
@@ -27,10 +27,30 @@ export default class FilterBar extends React.Component {
 				< PriceRange
 					  setPriceRange={setPriceRange}
 				  />
-				<button style={btnStyle} type='button'>Vymazať všetky filtre</button>
+				< TextFilter
+					setTextQuery={setTextQuery}
+					textQuery={textQuery}
+				/>
+				<button style={btnStyle} type='button' onClick={clearAllFilters}>Vymazať filtre</button>
 			 </section>
 
 		)
+	}
+}
+
+class TextFilter extends React.Component {
+
+	render() {
+
+		const {setTextQuery, textQuery} = this.props;
+
+		return (
+			<>
+				<label> Textový filter </label>
+				<input value={textQuery} onChange={setTextQuery} id='textFilter'></input>
+			</>
+		)
+
 	}
 }
 
@@ -42,10 +62,9 @@ class PriceRange extends React.Component {
 
 		return (
 			<>
-				<label> Cenové rozmedzie </label>
-				<input id='minFilter'></input>
-				<input id='maxFilter'></input>
-				<button onClick={setPriceRange} type='button'>Hľadať</button>
+				<label> Cenový filter </label>
+				<input onChange={setPriceRange.min} id='minFilter' placeholder='Od'></input>
+				<input onChange={setPriceRange.max} id='maxFilter' placeholder='Do'></input>
 			</>
 		)
 

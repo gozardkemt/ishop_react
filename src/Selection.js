@@ -9,7 +9,7 @@ export default class Selection extends React.Component {
 			<>
 				<label> Kategórie produktov </label>
 				<select onChange={onChange} className='options'>
-					<option id='0' defaultValue>Všetky</option>
+					<option id='0' value='all' defaultValue>Všetky</option>
 					< Options categories={categories} />
 				</select>
 			</>

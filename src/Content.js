@@ -4,16 +4,16 @@ export default class Content extends React.Component {
 
 	render() {
 
-		const {products, categories, activeCategoryId, onClick, card, priceRange} = this.props;
+		const {products, categories, activeCategoryId, onClick, card, priceRange, textQuery} = this.props;
 		const contentStyle = {
 			display:'grid',
 			gridTemplateColumns: 'repeat(5, 1fr)',
 			gridTemplateRows: 'repeat(3, min-content)',
 		};
 
-		const filterByPrice = products.filter(p => priceRange[0] < p.price && p.price < priceRange[1]);
-		const filteredProducts = activeCategoryId === '0' ? filterByPrice : filterByPrice.filter(p => p.categoryId === activeCategoryId);
-
+		const filterByPrice = products.filter(p => priceRange[0] <= p.price && p.price <= priceRange[1]);
+		const filterByText = filterByPrice.filter(p => p.name.toLowerCase().includes(textQuery.toLowerCase()));
+		const filteredProducts = activeCategoryId === '0' ? filterByText : filterByText.filter(p => p.categoryId === activeCategoryId);
 
 		if (filteredProducts.length < 1) {
 

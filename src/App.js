@@ -14,17 +14,33 @@ export default class App extends React.Component {
 			activeShopForm: false,
 			activeFilterBar: false,
 			priceRange: [0, Infinity],
+			textQuery: '',
 			activeCategoryId: '0',
 			shoppingCard: []
 		}
 	}
 
-	setPriceRange = () => {
-		const d = document;
-		const min = parseInt(d.getElementById('minFilter').value) || 0;
-		const max = parseInt(d.getElementById('maxFilter').value) || Infinity;
+	setTextQuery = e => {
 		this.setState({
-			priceRange: [ min, max ]
+			textQuery: e.currentTarget.value,
+		})
+	}
+
+	setMinPriceRange = e => {
+		this.setState({
+			priceRange: [
+				parseInt(e.currentTarget.value) || 0,
+				this.state.priceRange[1]
+			]
+		})
+	}
+
+	setMaxPriceRange = e => {
+		this.setState({
+			priceRange: [
+				this.state.priceRange[0],
+				parseInt(e.currentTarget.value) || Infinity
+			]
 		})
 	}
 
@@ -133,15 +149,22 @@ export default class App extends React.Component {
 	}
 
 	clearAllFilters = () => {
+
+		const d = document;
+		d.getElementById('minFilter').value = '';
+		d.getElementById('maxFilter').value = '';
+		d.getElementsByClassName('options')[0].value= 'all';
+
 		this.setState({
-			priceRange: [],
+			priceRange: [0, Infinity],
 			activeCategoryId: '0',
+			textQuery: ''
 		})
 	}
 
 	render() {
 		const {products, categories} = this.props;
-		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter, priceRange:range} = this.state;
+		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter, priceRange:range, textQuery} = this.state;
 		const {
 			changeActiveCategoryId,
 			handleRemoveClick,
@@ -149,19 +172,26 @@ export default class App extends React.Component {
 			emptyShoppingCard,
 			toggleForm,
 			toggleFilterBar,
-			setPriceRange
+			setMaxPriceRange,
+			setMinPriceRange,
+			clearAllFilters,
+			setTextQuery
 		} = this;
 
 		return (
 		    <>
 			  < Header
 			  		onChange={toggleFilterBar}
+					activeFilterBar={filter}
 			  	/>
 			  < FilterBar
 			  		activeFilterBar={filter}
 					onChange={changeActiveCategoryId}
-					setPriceRange={setPriceRange}
+					setPriceRange={{ min: setMinPriceRange, max:setMaxPriceRange}}
 					categories={categories}
+					clearAllFilters={clearAllFilters}
+					setTextQuery={setTextQuery}
+					textQuery={textQuery}
 				/>
 			  < ShoppingCard
 			  		emptyShoppingCard={emptyShoppingCard}
@@ -182,6 +212,7 @@ export default class App extends React.Component {
 					activeCategoryId={id}
 					categories={categories}
 					products={products}
+					textQuery={textQuery}
 				/>
 		    </>
 		)
