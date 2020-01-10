@@ -7,22 +7,6 @@ export default class Content extends React.Component {
 
 		const {products, categories, activeCategoryId, onClick, card, priceRange, textQuery} = this.props;
 
-		Content.propTypes = {
-			products: PropTypes.array,
-			categories: PropTypes.array,
-			activeCategoryId: PropTypes.string,
-			onClick: PropTypes.func,
-			card: PropTypes.array,
-			priceRange: PropTypes.array,
-			textQuery: PropTypes.string,
-		}
-
-		const contentStyle = {
-			display:'grid',
-			gridTemplateColumns: 'repeat(5, 1fr)',
-			gridTemplateRows: 'repeat(3, min-content)',
-		};
-
 		const filterByPrice = products.filter(p => priceRange[0] <= p.price && p.price <= priceRange[1]);
 		const filterByText = filterByPrice.filter(p => p.name.toLowerCase().includes(textQuery.toLowerCase()));
 		const filteredProducts = activeCategoryId === '0' ? filterByText : filterByText.filter(p => p.categoryId === activeCategoryId);
@@ -37,13 +21,28 @@ export default class Content extends React.Component {
 		}
 
 		return (
-			<main id='content' style={contentStyle} >
+			<ContentWrapper>
 				{ filteredProducts.map( product =>
-					< Product key={product.name} card={card} onClick={onClick} product={product} categories={categories} activeCategoryId={activeCategoryId} />
+					< Product key={product.name}
+						card={card}
+						onClick={onClick}
+						product={product}
+						categories={categories}
+						activeCategoryId={activeCategoryId} />
 				)}
-			</main>
+			</ContentWrapper>
 		)
 	}
+}
+
+Content.propTypes = {
+	products: PropTypes.array,
+	categories: PropTypes.array,
+	activeCategoryId: PropTypes.string,
+	onClick: PropTypes.func,
+	card: PropTypes.array,
+	priceRange: PropTypes.array,
+	textQuery: PropTypes.string,
 }
 
 class Product extends React.Component {
@@ -55,30 +54,25 @@ class Product extends React.Component {
 
 		if (!thumbnail) {return null}
 
-		const imgStyle = {maxWidth:'100%', maxHeight:'100%', height:'min-content'}
-
 		return (
 			< ProductWrapper>
-				<strong className='name' dangerouslySetInnerHTML={{__html: name}}></strong>
-				<span className='price'>Cena: {price}€</span>
-				< ProductCategory categoryId={categoryId} categories={categories}/>
-				<img alt='foto' src={thumbnail} style={imgStyle}/>
+				< ProductName name={name} />
+				< ProductPrice price={price} />
+				< ProductCategory categoryId={categoryId} categories={categories} />
+				< ProductImg src={thumbnail} />
 				< Button card={card} product={product} onClick={onClick} />
-			< /ProductWrapper>
+			</ ProductWrapper>
 		)
 	}
-};
-
-const ProductWrapper = (props) => {
-
-	const productStyle = { border:'3px solid lightgray', margin:'10px', display:'flex', flexDirection:'column', justifyContent:'space-between', alignItems: 'center' };
-
-	return (
-		<article className='product' style={productStyle}>
-			{props.children}
-		</article>
-	)
 }
+
+// dumb components
+
+const ProductName = props => <strong className='name' dangerouslySetInnerHTML={{__html: props.name}}></strong>
+const ProductPrice = props => <span className='price'>Cena: {props.price}€</span>
+
+const imgStyle = { maxWidth:'100%', maxHeight:'100%', height:'min-content' }
+const ProductImg = props => <img alt='foto' src={props.src} style={imgStyle}/>
 
 const ProductCategory = ({categoryId:id, categories}) => {
 
@@ -91,12 +85,7 @@ const ProductCategory = ({categoryId:id, categories}) => {
 	)
 }
 
-class Button extends React.Component {
-
-	render() {
-
-		const {name, price, thumbnail} = this.props.product;
-		const {onClick, card} = this.props;
+const Button = ({onClick, card, product:{name, price, thumbnail}}) => {
 
 		const buttonText = card.some(p => p.name === name) ? 'Vložte ďalší kus do košíka' : 'Vložte do košíka';
 
@@ -105,5 +94,39 @@ class Button extends React.Component {
 				{buttonText}
 			</button>
 		)
-	}
+}
+
+// wrappers
+
+const ContentWrapper = (props) => {
+
+	const contentStyle = {
+		display:'grid',
+		gridTemplateColumns: 'repeat(5, 1fr)',
+		gridTemplateRows: 'repeat(3, min-content)',
+	};
+
+	return (
+		<main id='content' style={contentStyle} >
+			{props.children}
+		</main>
+	)
+}
+
+const ProductWrapper = (props) => {
+
+	const productStyle = {
+		border:'3px solid lightgray',
+		margin:'10px',
+		display:'flex',
+		flexDirection:'column',
+		justifyContent:'space-between',
+		alignItems: 'center'
+	};
+
+	return (
+		<article className='product' style={productStyle}>
+			{props.children}
+		</article>
+	)
 }

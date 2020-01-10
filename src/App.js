@@ -4,6 +4,7 @@ import Content from './Content.js';
 import FilterBar from './FilterBar.js';
 import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
+import {getIndexOfProduct, getTargetValue, getClickedProduct} from './appServices.js';
 
 export default class App extends React.Component {
 
@@ -20,16 +21,12 @@ export default class App extends React.Component {
 		}
 	}
 
-	setTextQuery = e => {
-		this.setState({
-			textQuery: e.currentTarget.value,
-		})
-	}
+	setTextQuery = e => { this.setState({ textQuery: getTargetValue(e) }) }
 
 	setMinPriceRange = e => {
 		this.setState({
 			priceRange: [
-				parseInt(e.currentTarget.value) || 0,
+				parseInt(getTargetValue(e)) || 0,
 				this.state.priceRange[1]
 			]
 		})
@@ -39,7 +36,7 @@ export default class App extends React.Component {
 		this.setState({
 			priceRange: [
 				this.state.priceRange[0],
-				parseInt(e.currentTarget.value) || Infinity
+				parseInt(getTargetValue(e)) || Infinity
 			]
 		})
 	}
@@ -56,28 +53,9 @@ export default class App extends React.Component {
 		})
 	}
 
-	getClickedProduct = e => {
-		return {
-			name: e.currentTarget.dataset.name,
-			price: e.currentTarget.dataset.price,
-			src: e.currentTarget.dataset.src,
-			count: 1
-		}
-	}
-
-	getIndexOfProduct = product => {
-		const {shoppingCard} = this.state;
-
-		const findProduct = (p) => {
-			return (p.name === product.name) && (p.src === product.src);
-		}
-
-		return shoppingCard.findIndex(findProduct);
-	}
-
 	handleButtonClick = e => {
-		const clicked = this.getClickedProduct(e);
-		const index = this.getIndexOfProduct(clicked);
+		const clicked = getClickedProduct(e);
+		const index = getIndexOfProduct(clicked, this.state.shoppingCard);
 
 		if (index !== -1) {
 			this.increaseCount(index)
@@ -105,9 +83,11 @@ export default class App extends React.Component {
 	}
 
 	handleRemoveClick = e => {
-		const clicked = this.getClickedProduct(e);
-		const index = this.getIndexOfProduct(clicked);
-		const count = this.state.shoppingCard[index].count;
+
+		const card = this.state.shoppingCard;
+		const clicked = getClickedProduct(e);
+		const index = getIndexOfProduct(clicked, card);
+		const count = card[index].count;
 
 		if (count < 2) {
 			this.removeItemFromCard(clicked)
@@ -164,7 +144,15 @@ export default class App extends React.Component {
 
 	render() {
 		const {products, categories} = this.props;
-		const {activeCategoryId:id, shoppingCard:card, activeShopForm:form, activeFilterBar:filter, priceRange:range, textQuery} = this.state;
+		const {
+			activeCategoryId:id,
+			shoppingCard:card,
+			activeShopForm:form,
+			activeFilterBar:filter,
+			priceRange:range,
+			textQuery
+		} = this.state;
+
 		const {
 			changeActiveCategoryId,
 			handleRemoveClick,

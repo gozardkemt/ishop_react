@@ -6,32 +6,20 @@ import PropTypes from 'prop-types';
 export default class FilterBar extends React.Component {
 
 	render() {
-		const {categories, onChange, activeFilterBar, setPriceRange, clearAllFilters, setTextQuery, textQuery} = this.props;
 
-		FilterBar.propTypes = {
-			categories: PropTypes.array,
-			onChange: PropTypes.func,
-			activeFilterBar: PropTypes.bool,
-			setPriceRange: PropTypes.object,
-			clearAllFilters: PropTypes.func,
-			setTextQuery: PropTypes.func,
-			textQuery: PropTypes.string,
-		}
+		if (!this.props.activeFilterBar) { return null };
 
-		if (!activeFilterBar) { return null };
-
-		const sectionStyle = {
-			width:'100%',
-			textAlign: 'left',
-			background: 'skyblue',
-			marginTop: '0.5rem'
-		}
-
-		const btnStyle = {float: 'right'};
+		const {
+			categories,
+			onChange,
+			setPriceRange,
+			clearAllFilters,
+			setTextQuery,
+			textQuery
+		} = this.props;
 
 		return (
-
-			<section style={sectionStyle}>
+			< SectionWrapper>
 				< Selection
 					  onChange={onChange}
 					  categories={categories}
@@ -43,18 +31,59 @@ export default class FilterBar extends React.Component {
 					setTextQuery={setTextQuery}
 					textQuery={textQuery}
 				/>
-				<button style={btnStyle} type='button' onClick={clearAllFilters}>Vymazať filtre</button>
-			 </section>
-
+				< ClearFilterButton
+					onClick={clearAllFilters}
+				/>
+			</ SectionWrapper>
 		)
 	}
 }
 
-class TextFilter extends React.Component {
+FilterBar.propTypes = {
+	categories: PropTypes.array,
+	onChange: PropTypes.func,
+	activeFilterBar: PropTypes.bool,
+	setPriceRange: PropTypes.object,
+	clearAllFilters: PropTypes.func,
+	setTextQuery: PropTypes.func,
+	textQuery: PropTypes.string,
+}
 
-	render() {
+// style wrappers
 
-		const {setTextQuery, textQuery} = this.props;
+const SectionWrapper = (props) => {
+
+	const sectionStyle = {
+		width:'100%',
+		textAlign: 'left',
+		background: 'skyblue',
+		marginTop: '0.5rem'
+	}
+
+	return (
+		<section style={sectionStyle}>
+			{props.children}
+		</section>
+	)
+
+}
+
+// dumb components
+
+const ClearFilterButton = ({onClick}) => {
+
+	return	(
+			<button style={{float: 'right'}} type='button' onClick={onClick}>
+				Vymazať filtre
+			</button>
+		)
+
+}
+
+ClearFilterButton.propTypes = { clearAllFilters: PropTypes.func }
+
+
+const TextFilter = ({setTextQuery, textQuery}) => {
 
 		return (
 			<>
@@ -63,14 +92,11 @@ class TextFilter extends React.Component {
 			</>
 		)
 
-	}
 }
 
-class PriceRange extends React.Component {
+TextFilter.propTypes = { setTextQuery: PropTypes.func, textQuery: PropTypes.string }
 
-	render() {
-
-		const {setPriceRange} = this.props;
+const PriceRange = ({setPriceRange}) => {
 
 		return (
 			<>
@@ -80,5 +106,6 @@ class PriceRange extends React.Component {
 			</>
 		)
 
-	}
 }
+
+PriceRange.propTypes = { setPriceRange: PropTypes.object }
