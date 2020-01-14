@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ContentWrapper, ProductWrapper } from './StyleWrappers.js';
+import { ProductPrice, ProductCategory, ProductImg, Button } from './ProductDetail.js';
+import { Link } from '@reach/router'
 
 export default class Content extends React.Component {
 
@@ -50,13 +53,13 @@ class Product extends React.Component {
 	render() {
 
 		const {product, categories, onClick, card} = this.props;
-		const {name, price, categoryId, thumbnail} = product;
+		const {name, price, categoryId, thumbnail, productId} = product;
 
 		if (!thumbnail) {return null}
 
 		return (
 			< ProductWrapper>
-				< ProductName name={name} />
+				< Link className='name' to={'product/' + productId} >{name}</Link>
 				< ProductPrice price={price} />
 				< ProductCategory categoryId={categoryId} categories={categories} />
 				< ProductImg src={thumbnail} />
@@ -64,69 +67,4 @@ class Product extends React.Component {
 			</ ProductWrapper>
 		)
 	}
-}
-
-// dumb components
-
-const ProductName = props => <strong className='name' dangerouslySetInnerHTML={{__html: props.name}}></strong>
-const ProductPrice = props => <span className='price'>Cena: {props.price}€</span>
-
-const imgStyle = { maxWidth:'100%', maxHeight:'100%', height:'min-content' }
-const ProductImg = props => <img alt='foto' src={props.src} style={imgStyle}/>
-
-const ProductCategory = ({categoryId:id, categories}) => {
-
-	let category = categories.find(c => c.id === id);
-
-	return (
-		<p className={id}>
-			Kategória produktu: { category.name }
-		</p>
-	)
-}
-
-const Button = ({onClick, card, product:{name, price, thumbnail}}) => {
-
-		const buttonText = card.some(p => p.name === name) ? 'Vložte ďalší kus do košíka' : 'Vložte do košíka';
-
-		return (
-			<button data-src={thumbnail} data-name={name} data-price={price} onClick={onClick} type='button'>
-				{buttonText}
-			</button>
-		)
-}
-
-// wrappers
-
-const ContentWrapper = (props) => {
-
-	const contentStyle = {
-		display:'grid',
-		gridTemplateColumns: 'repeat(5, 1fr)',
-		gridTemplateRows: 'repeat(3, min-content)',
-	};
-
-	return (
-		<main id='content' style={contentStyle} >
-			{props.children}
-		</main>
-	)
-}
-
-const ProductWrapper = (props) => {
-
-	const productStyle = {
-		border:'3px solid lightgray',
-		margin:'10px',
-		display:'flex',
-		flexDirection:'column',
-		justifyContent:'space-between',
-		alignItems: 'center'
-	};
-
-	return (
-		<article className='product' style={productStyle}>
-			{props.children}
-		</article>
-	)
 }

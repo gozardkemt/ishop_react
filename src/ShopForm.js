@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormStyleWrapper } from './StyleWrappers.js';
 import {isAllValid, validateName, validateEmail, validateAdress, validatePsc} from './appServices.js';
 
 const defaultFormState =  {
@@ -122,24 +123,6 @@ ShopForm.propTypes = {
 	closeForm: PropTypes.func,
 }
 
-//  style wrappers
-
-const formStyle = {
-	height:'50%',
-	width: '50%',
-	backgroundColor:'skyblue',
-	position: 'absolute',
-	top:'25%',
-	left:'25%',
-	display: 'flex',
-	flexDirection: 'column',
-	justifyContent: 'space-evenly',
-	alignItems: 'center'
-}
-
-const FormStyleWrapper = (props) => <form style={formStyle}>{props.children}</form>
-
-
 function ErrorMessage({type, value, isSent, isValid, isAllValid}) {
 
 	if (isSent) {
@@ -180,7 +163,6 @@ const closeFormStyle = {
 	color: 'white'
 }
 
-// dumb components
 
 const CloseFormButton = (props) => <b style={closeFormStyle} onClick={props.onClick}>X</b>
 const Input = ({onKeyUp, isReady, type, value}) => !isReady ? <input value={value} type='text' onChange={onKeyUp} data-type={type}></input> : null;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Selection from './Selection.js';
 import PropTypes from 'prop-types';
-
+import { SectionWrapper } from './StyleWrappers.js';
 
 export default class FilterBar extends React.Component {
 
@@ -47,25 +47,6 @@ FilterBar.propTypes = {
 	clearAllFilters: PropTypes.func,
 	setTextQuery: PropTypes.func,
 	textQuery: PropTypes.string,
-}
-
-// style wrappers
-
-const SectionWrapper = (props) => {
-
-	const sectionStyle = {
-		width:'100%',
-		textAlign: 'left',
-		background: 'skyblue',
-		marginTop: '0.5rem'
-	}
-
-	return (
-		<section style={sectionStyle}>
-			{props.children}
-		</section>
-	)
-
 }
 
 // dumb components

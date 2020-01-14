@@ -4,6 +4,8 @@ import Content from './Content.js';
 import FilterBar from './FilterBar.js';
 import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
+import ProductDetail from './ProductDetail.js';
+import { Router } from '@reach/router'
 import {getIndexOfProduct, getTargetValue, getClickedProduct} from './appServices.js';
 
 export default class App extends React.Component {
@@ -171,7 +173,7 @@ export default class App extends React.Component {
 			  < Header
 			  		onChange={toggleFilterBar}
 					activeFilterBar={filter}
-			  	/>
+			  		/>
 			  < FilterBar
 			  		activeFilterBar={filter}
 					onChange={changeActiveCategoryId}
@@ -180,28 +182,37 @@ export default class App extends React.Component {
 					clearAllFilters={clearAllFilters}
 					setTextQuery={setTextQuery}
 					textQuery={textQuery}
-				/>
-			  < ShoppingCard
+					/>
+				< ShoppingCard
 			  		emptyShoppingCard={emptyShoppingCard}
 					shoppingCard={card}
 					onClick={handleRemoveClick}
 					openForm={toggleForm}
-
-				/>
-			  < ShopForm
+					/>
+				< ShopForm
 			  		shoppingCard={card}
 					activeShopForm={form}
 					closeForm={toggleForm}
-			  />
-			  < Content
-			  		card={card}
-					priceRange={range}
-			  		onClick={handleButtonClick}
-					activeCategoryId={id}
-					categories={categories}
-					products={products}
-					textQuery={textQuery}
-				/>
+					/>
+				< Router >
+					< Content
+				  		card={card}
+						priceRange={range}
+				  		onClick={handleButtonClick}
+						activeCategoryId={id}
+						categories={categories}
+						products={products}
+						textQuery={textQuery}
+						path={"/"}
+						/>
+					< ProductDetail
+						card={card}
+						onClick={handleButtonClick}
+						path={"/product/:productId"}
+						products={products}
+						categories={categories}
+						/>
+				</ Router >
 		    </>
 		)
   	}
