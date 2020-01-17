@@ -15,7 +15,8 @@ export default class FilterBar extends React.Component {
 			setPriceRange,
 			clearAllFilters,
 			setTextQuery,
-			textQuery
+			textQuery,
+			setRefs
 		} = this.props;
 
 		return (
@@ -23,9 +24,11 @@ export default class FilterBar extends React.Component {
 				< Selection
 					  onChange={onChange}
 					  categories={categories}
+					  setRefs={setRefs}
 				  />
 				< PriceRange
 					  setPriceRange={setPriceRange}
+					  setRefs={setRefs}
 				  />
 				< TextFilter
 					setTextQuery={setTextQuery}
@@ -77,15 +80,20 @@ const TextFilter = ({setTextQuery, textQuery}) => {
 
 TextFilter.propTypes = { setTextQuery: PropTypes.func, textQuery: PropTypes.string }
 
-const PriceRange = ({setPriceRange}) => {
+class PriceRange extends React.Component {
+
+	render() {
+
+		const {setPriceRange, setRefs} = this.props;
 
 		return (
 			<>
 				<label> Cenový filter </label>
-				<input onChange={setPriceRange.min} id='minFilter' placeholder='Od'></input>
-				<input onChange={setPriceRange.max} id='maxFilter' placeholder='Do'></input>
+				<input onChange={setPriceRange.min} ref={setRefs.min} id='minFilter' placeholder='Od'></input>
+				<input onChange={setPriceRange.max} ref={setRefs.max} id='maxFilter' placeholder='Do'></input>
 			</>
 		)
+	}
 
 }
 

@@ -24,7 +24,7 @@ export const getIndexOfProduct = (product, shoppingCard) => {
 
 // form validations
 
-export const isAllValid = ({name, email, adress, psc}) => validateName(name) && validateEmail(email) && validateAdress(adress) && validatePsc(psc);
+export const isAllValid = ({name, email, adress, zip}) => validateName(name) && validateEmail(email) && validateAdress(adress) && validateZip(zip);
 
 export const validateName = (t) => t.match(/(\w.+\s).+/i) ? true : false;
 export const validateEmail = (t) => {
@@ -32,7 +32,17 @@ export const validateEmail = (t) => {
 		return t.match(re) ? true : false;
 	}
 export const validateAdress = (t) => t.match(/[a-zA-Z0-9]/) ? true : false;
-export const validatePsc = (t) => t.match(/[0-9]/) ? true : false;
+export const validateZip = (t) => t.match(/[0-9]/) ? true : false;
+
+//  restrict typing in input
+
+export const isCharNotAllowedInZipField = (char) => {
+
+	if ([null, undefined, '', ' ', NaN].includes(char)) { return false };
+	if ( validateZip(char) ) { return false };
+
+	return true;
+}
 
 //  math
 

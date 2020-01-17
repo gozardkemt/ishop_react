@@ -8,19 +8,28 @@ import ProductDetail from './ProductDetail.js';
 import { Router } from '@reach/router'
 import {getIndexOfProduct, getTargetValue, getClickedProduct} from './appServices.js';
 
+
+const defaultState = {
+
+	activeShopForm: false,
+	activeFilterBar: false,
+	priceRange: [0, Infinity],
+	textQuery: '',
+	activeCategoryId: '0',
+	shoppingCard: []
+
+}
+
 export default class App extends React.Component {
 
 	constructor(props) {
 		super(props)
 
-		this.state = {
-			activeShopForm: false,
-			activeFilterBar: false,
-			priceRange: [0, Infinity],
-			textQuery: '',
-			activeCategoryId: '0',
-			shoppingCard: []
-		}
+		this.minFilterRef = React.createRef();
+		this.maxFilterRef = React.createRef();
+		this.optionFilterRef = React.createRef();
+
+		this.state = defaultState;
 	}
 
 	setTextQuery = e => { this.setState({ textQuery: getTargetValue(e) }) }
@@ -132,10 +141,9 @@ export default class App extends React.Component {
 
 	clearAllFilters = () => {
 
-		const d = document;
-		d.getElementById('minFilter').value = '';
-		d.getElementById('maxFilter').value = '';
-		d.getElementsByClassName('options')[0].value= 'all';
+		this.optionFilterRef.current.value = 'all';
+		this.minFilterRef.current.value = '';
+		this.maxFilterRef.current.value = '';
 
 		this.setState({
 			priceRange: [0, Infinity],
@@ -165,7 +173,10 @@ export default class App extends React.Component {
 			setMaxPriceRange,
 			setMinPriceRange,
 			clearAllFilters,
-			setTextQuery
+			setTextQuery,
+			minFilterRef,
+			maxFilterRef,
+			optionFilterRef
 		} = this;
 
 		return (
@@ -177,11 +188,19 @@ export default class App extends React.Component {
 			  < FilterBar
 			  		activeFilterBar={filter}
 					onChange={changeActiveCategoryId}
-					setPriceRange={{ min: setMinPriceRange, max:setMaxPriceRange}}
+					setPriceRange={{
+						min: setMinPriceRange,
+						max: setMaxPriceRange
+					}}
 					categories={categories}
 					clearAllFilters={clearAllFilters}
 					setTextQuery={setTextQuery}
 					textQuery={textQuery}
+					setRefs={{
+						min: minFilterRef,
+						max: maxFilterRef,
+						select: optionFilterRef
+					}}
 					/>
 				< ShoppingCard
 			  		emptyShoppingCard={emptyShoppingCard}

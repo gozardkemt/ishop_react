@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormStyleWrapper } from './StyleWrappers.js';
-import {isAllValid, validateName, validateEmail, validateAdress, validatePsc} from './appServices.js';
+import {isAllValid, validateName, validateEmail, validateAdress, validateZip, isCharNotAllowedInZipField} from './appServices.js';
 
 const defaultFormState =  {
 	name: '',
 	email: '',
 	adress: '',
-	psc: '',
+	zip: '',
 	isSent: false,
 }
 
@@ -20,8 +20,14 @@ export default class ShopForm extends React.Component {
 
 	submitForm = () => { this.setState({ isSent: true })}
 	resetShopForm = () => { this.setState(defaultFormState) }
+
 	handleTyping = (e) => {
+
 		const type = e.currentTarget.dataset.type;
+		const char = e.nativeEvent.data;
+
+		if (type === 'zip' && isCharNotAllowedInZipField(char)) { return };
+
 	    this.setState({
 			[type]: e.currentTarget.value,
 			isSent: false
@@ -33,7 +39,7 @@ export default class ShopForm extends React.Component {
 		if (!this.props.activeShopForm) return null;
 
 		const {closeForm} = this.props;
-		const {adress, email, name, psc, isSent} = this.state;
+		const {adress, email, name, zip, isSent} = this.state;
 		const {handleTyping, submitForm, resetShopForm} = this;
 
 		return (
@@ -92,16 +98,16 @@ export default class ShopForm extends React.Component {
 					</label>
 					<label>
 						< ErrorMessage
-							value={psc}
+							value={zip}
 							isSent={isSent}
-							type={'psc'}
-							isValid={validatePsc(psc)}
+							type={'zip'}
+							isValid={validateZip(zip)}
 							isAllValid={isAllValid(this.state)}
 						/>
 						< Input
-							value={psc}
+							value={zip}
 							onKeyUp={handleTyping}
-							type={'psc'}
+							type={'zip'}
 							isReady={isAllValid(this.state) && isSent}
  						/>
 					</label>
@@ -165,5 +171,5 @@ const closeFormStyle = {
 
 
 const CloseFormButton = (props) => <b style={closeFormStyle} onClick={props.onClick}>X</b>
-const Input = ({onKeyUp, isReady, type, value}) => !isReady ? <input value={value} type='text' onChange={onKeyUp} data-type={type}></input> : null;
+const Input = ({onKeyUp, isReady, type, value}) => !isReady ? <input value={value} type='text' onFocus={(e) => { console.log(e.target.selectionStart) }} onChange={onKeyUp} data-type={type}></input> : null;
 const ClearFormButton = ({clearShopForm, isReady}) => !isReady ? <button onClick={clearShopForm} type='button'>Vyčisti formulár</button> : null;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@reach/router'
 import PropTypes from 'prop-types';
 
 export default function Header({onChange, activeFilterBar}) {
@@ -13,7 +14,7 @@ export default function Header({onChange, activeFilterBar}) {
 		  <button onClick={onChange} style={btnStyle} type='button'>
 		  { activeFilterBar ? 'SKRY FILTRE' : 'ZOBRAZ FILTRE' }
 		  </button>
-		  <span style={headlineStyle}>iStore Slovakia w/React</span>
+		  <Link style={headlineStyle} to="/">iStore Slovakia w/React</ Link>
 		</header>
 
 	)

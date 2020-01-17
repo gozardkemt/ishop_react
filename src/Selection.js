@@ -3,12 +3,12 @@ import React from 'react';
 export default class Selection extends React.Component {
 
 	render() {
-		const {categories, onChange} = this.props;
+		const {categories, onChange, setRefs} = this.props;
 
 		return (
 			<>
 				<label> Kategórie produktov </label>
-				<select onChange={onChange} className='options'>
+				<select ref={setRefs.select} onChange={onChange} className='options'>
 					<option id='0' value='all' defaultValue>Všetky</option>
 					< Options categories={categories} />
 				</select>
