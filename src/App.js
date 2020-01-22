@@ -8,9 +8,13 @@ import ProductDetail from './ProductDetail.js';
 import { Router } from '@reach/router'
 import { getIndexOfProduct, getTargetValue, getClickedProduct } from './appServices.js';
 
-
 const defaultState = {
 
+	products: [],
+	categories: [],
+	isProductsLoading: true,
+	isCategoriesLoading: true,
+	isError: false,
 	activeShopForm: false,
 	activeFilterBar: false,
 	priceRange: [0, Infinity],
@@ -152,9 +156,52 @@ export default class App extends React.Component {
 		})
 	}
 
+	componentDidMount() {
+
+		fetch("http://localhost:8081/categories.json")
+			.then( res => res.json())
+			.then(
+				(res) => {
+					this.setState({
+						isCategoriesLoading: false,
+						categories: res
+					})
+				},
+				(err) => {
+					console.log(err);
+					this.setState({
+						isLoading: false,
+						isError: true
+					})
+				}
+ 			)
+
+		fetch("http://localhost:8081/products.json")
+			.then( res => res.json())
+			.then(
+				(res) => {
+					this.setState({
+						isLoading: false,
+						products: res
+					})
+				},
+				(err) => {
+					console.log(err);
+					this.setState({
+						isProductsLoading: false,
+						isError: true
+					})
+				}
+ 			)
+	}
+
 	render() {
-		const {products, categories} = this.props;
+
 		const {
+			products,
+			categories,
+			isCategoriesLoading,
+			isProductsLoading,
 			activeCategoryId:id,
 			shoppingCard:card,
 			activeShopForm:form,
@@ -178,6 +225,8 @@ export default class App extends React.Component {
 			maxFilterRef,
 			optionFilterRef
 		} = this;
+
+		if ( isProductsLoading && isCategoriesLoading ) { return <span> loading... please wait </span> }
 
 		return (
 		    <>

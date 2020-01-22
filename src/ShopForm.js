@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormStyleWrapper } from './StyleWrappers.js';
-import {isAllValid, validateName, validateEmail, validateAdress, validateZip, isCharNotAllowedInZipField} from './appServices.js';
+import { isAllValid, validateName, validateEmail, validateAdress, validateZip, isCharNotAllowedInZipField } from './appServices.js';
 
 const defaultFormState =  {
 	name: '',

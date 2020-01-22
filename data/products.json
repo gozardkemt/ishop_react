@@ -1,24 +1,4 @@
-
-export const categories = [
-    {
-        "name": "iPhones",
-        "id": "1"
-    },
-    {
-        "name": "Macs",
-        "id": "2"
-    },
-    {
-        "name": "Apple Watch",
-        "id": "4"
-    },
-    {
-        "name": "Other",
-        "id": "3"
-    }
-];
-
-export const products = [
+[
     {
         "name": "iPhone 11 64GB Black",
 		"productId": 1,
@@ -57,7 +37,6 @@ export const products = [
     {
         "name": "MacBook Air 13\" i5 1.8GHz 8GB 128GB flash SK",
 		"productId": 6,
-
         "price": 819.00,
         "thumbnail": "https://www.istores.sk/macbook-air-13-i5-1-8ghz-8gb-128gb-flash-sk-galeria-1-small_ies999714.jpg",
         "categoryId": "2"
@@ -65,7 +44,6 @@ export const products = [
     {
         "name": "Apple AirPods Pro",
 		"productId": 7,
-
         "price": 279.00,
         "thumbnail": "https://www.istores.sk/apple-airpods-pro_ig98781.jpg?attname=thumbnail_490&attpedid=52",
         "categoryId": "3"
@@ -77,4 +55,4 @@ export const products = [
         "thumbnail": "https://www.istores.sk/apple-tv-4k-64gb-galeria-5-small_ies1031074.jpg",
         "categoryId": "3"
     }
-];
+]

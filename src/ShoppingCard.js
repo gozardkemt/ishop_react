@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ShopCardWrapper, ShopListWrapper, ShopCardProductWrapper } from './StyleWrappers.js';
-import {sum} from './appServices.js';
+import { sum } from './appServices.js';
 
 export default class ShoppingCard extends React.Component {
 
