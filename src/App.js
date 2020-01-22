@@ -6,7 +6,7 @@ import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
 import ProductDetail from './ProductDetail.js';
 import { Router } from '@reach/router'
-import {getIndexOfProduct, getTargetValue, getClickedProduct} from './appServices.js';
+import { getIndexOfProduct, getTargetValue, getClickedProduct } from './appServices.js';
 
 
 const defaultState = {

@@ -9,7 +9,7 @@ export default class ProductDetail extends React.Component {
 
 		const { productId, products, categories, onClick, card } = this.props;
 		const product = getProductFromId(productId, products);
-		const {thumbnail:src, price, name, categoryId} = product;
+		const { thumbnail:src, price, name, categoryId } = product;
 
 		return 	(
 			< ProductWrapper>
