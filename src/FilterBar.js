@@ -2,6 +2,8 @@ import React from 'react';
 import Selection from './Selection.js';
 import PropTypes from 'prop-types';
 import { SectionWrapper } from './StyleWrappers.js';
+import { LanguageContext } from './LanguageContext';
+
 
 export default class FilterBar extends React.Component {
 
@@ -54,29 +56,38 @@ FilterBar.propTypes = {
 
 // dumb components
 
-const ClearFilterButton = ({onClick}) => {
+class ClearFilterButton extends React.Component {
 
-	return	(
-			<button style={{float: 'right'}} type='button' onClick={onClick}>
-				Vymazať filtre
-			</button>
-		)
+	render() {
+
+		return	(
+				<button style={{float: 'right'}} type='button' onClick={this.props.onClick}>
+					{ this.context['clear filters'] }
+				</button>
+			)
+		}
 
 }
 
 ClearFilterButton.propTypes = { clearAllFilters: PropTypes.func }
 
 
-const TextFilter = ({setTextQuery, textQuery}) => {
+class TextFilter extends React.Component {
+
+	render() {
+
+		const {setTextQuery, textQuery} = this.props;
 
 		return (
 			<>
-				<label> Textový filter </label>
+				<label> {this.context['text filter']} </label>
 				<input value={textQuery} onChange={setTextQuery} id='textFilter'></input>
 			</>
 		)
+	}
 
 }
+
 
 TextFilter.propTypes = { setTextQuery: PropTypes.func, textQuery: PropTypes.string }
 
@@ -85,16 +96,21 @@ class PriceRange extends React.Component {
 	render() {
 
 		const {setPriceRange, setRefs} = this.props;
+		const trans = this.context;
 
 		return (
 			<>
-				<label> Cenový filter </label>
-				<input onChange={setPriceRange.min} ref={setRefs.min} id='minFilter' placeholder='Od'></input>
-				<input onChange={setPriceRange.max} ref={setRefs.max} id='maxFilter' placeholder='Do'></input>
+				<label> {trans['price filter']} </label>
+				<input onChange={setPriceRange.min} ref={setRefs.min} id='minFilter' placeholder={trans['from']}></input>
+				<input onChange={setPriceRange.max} ref={setRefs.max} id='maxFilter' placeholder={trans['to']}></input>
 			</>
 		)
 	}
 
 }
+
+ClearFilterButton.contextType = LanguageContext;
+TextFilter.contextType = LanguageContext;
+PriceRange.contextType = LanguageContext;
 
 PriceRange.propTypes = { setPriceRange: PropTypes.object }

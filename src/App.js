@@ -5,23 +5,33 @@ import FilterBar from './FilterBar.js';
 import ShoppingCard from './ShoppingCard.js';
 import ShopForm from './ShopForm.js';
 import ProductDetail from './ProductDetail.js';
-import { Router } from '@reach/router'
+import { Router } from '@reach/router';
+import { LanguageContext, translation } from './LanguageContext';
 import { getIndexOfProduct, getTargetValue, getClickedProduct } from './appServices.js';
 
 const defaultState = {
 
+	// fetch data
 	products: [],
 	categories: [],
+
+	// data loading
 	isProductsLoading: true,
 	isCategoriesLoading: true,
 	isError: false,
-	activeShopForm: false,
+
+	// user filter interaction
 	activeFilterBar: false,
 	priceRange: [0, Infinity],
 	textQuery: '',
 	activeCategoryId: '0',
-	shoppingCard: []
 
+	// user buying interaction
+	activeShopForm: false,
+	shoppingCard: [],
+
+	// others
+	lang: 'sk'
 }
 
 export default class App extends React.Component {
@@ -156,9 +166,16 @@ export default class App extends React.Component {
 		})
 	}
 
+	changeLang = () => {
+
+		this.setState({
+			lang: this.state.lang === 'sk' ? 'en' : 'sk'
+		})
+	}
+
 	componentDidMount() {
 
-		fetch("http://localhost:8081/categories.json")
+		fetch("http://localhost:8080/categories.json")
 			.then( res => res.json())
 			.then(
 				(res) => {
@@ -176,7 +193,7 @@ export default class App extends React.Component {
 				}
  			)
 
-		fetch("http://localhost:8081/products.json")
+		fetch("http://localhost:8080/products.json")
 			.then( res => res.json())
 			.then(
 				(res) => {
@@ -200,6 +217,7 @@ export default class App extends React.Component {
 		const {
 			products,
 			categories,
+			isError,
 			isCategoriesLoading,
 			isProductsLoading,
 			activeCategoryId:id,
@@ -207,7 +225,8 @@ export default class App extends React.Component {
 			activeShopForm:form,
 			activeFilterBar:filter,
 			priceRange:range,
-			textQuery
+			textQuery,
+			lang
 		} = this.state;
 
 		const {
@@ -223,16 +242,20 @@ export default class App extends React.Component {
 			setTextQuery,
 			minFilterRef,
 			maxFilterRef,
-			optionFilterRef
+			optionFilterRef,
+			changeLang
 		} = this;
 
-		if ( isProductsLoading && isCategoriesLoading ) { return <span> loading... please wait </span> }
+
+		if ( isProductsLoading && isCategoriesLoading ) { return <span>loading... please wait</span> }
+		if ( isError ) { return <span>We are sorry, there is a problem with your network</span> }
 
 		return (
-		    <>
+		    < LanguageContext.Provider value={translation[lang]}>
 			  < Header
 			  		onChange={toggleFilterBar}
 					activeFilterBar={filter}
+					changeLang={changeLang}
 			  		/>
 			  < FilterBar
 			  		activeFilterBar={filter}
@@ -281,7 +304,7 @@ export default class App extends React.Component {
 						categories={categories}
 						/>
 				</ Router >
-		    </>
+		    </ LanguageContext.Provider >
 		)
   	}
 }
