@@ -3,7 +3,7 @@ import Header from './Header.js';
 import Content from './Content.js';
 import FilterBar from './FilterBar.js';
 import ShoppingCard from './ShoppingCard.js';
-import ShopForm from './ShopForm.js';
+import {ShopForm} from './ShopForm.js';
 import ProductDetail from './ProductDetail.js';
 import { Router } from '@reach/router';
 import { LanguageContext, translation } from './LanguageContext';
@@ -175,7 +175,7 @@ export default class App extends React.Component {
 
 	componentDidMount() {
 
-		fetch("http://localhost:8080/categories.json")
+		fetch("./data/categories.json")
 			.then( res => res.json())
 			.then(
 				(res) => {
@@ -193,7 +193,7 @@ export default class App extends React.Component {
 				}
  			)
 
-		fetch("http://localhost:8080/products.json")
+		fetch("./data/products.json")
 			.then( res => res.json())
 			.then(
 				(res) => {

@@ -1,133 +1,130 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { FormStyleWrapper } from './StyleWrappers.js';
 import { isAllValid, validateName, validateEmail, validateAdress, validateZip, isCharNotAllowedInZipField } from './appServices.js';
 
-const defaultFormState =  {
-	name: '',
-	email: '',
-	adress: '',
-	zip: '',
-	isSent: false,
-}
+export const ShopForm = ({closeForm, activeShopForm}) => {
 
-export default class ShopForm extends React.Component {
+	const [ name, setName ] = useState('');
+	const [ email, setEmail ] = useState('');
+	const [ adress, setAdress ] = useState('');
+	const [ zip, setZip ] = useState('');
+	const [ isSent, setIsSent ] = useState(false);
 
-	constructor(props) {
-		super(props)
-		this.state = defaultFormState
+	const state = { name, email, adress, zip }
+	const setStatefun = {
+		name: setName,
+		email: setEmail,
+		adress: setAdress,
+		zip: setZip,
+		isSent: setIsSent
 	}
 
-	submitForm = () => { this.setState({ isSent: true })}
-	resetShopForm = () => { this.setState(defaultFormState) }
+	if (!activeShopForm) return null;
 
-	handleTyping = (e) => {
+	const submitForm = () => setIsSent(true);
+	const resetShopForm = () => {
+		setName('');
+		setEmail('');
+		setAdress('');
+		setZip('');
+		setIsSent(false);
+	}
+
+	const handleTyping = (e) => {
 
 		const type = e.currentTarget.dataset.type;
 		const char = e.nativeEvent.data;
+		const val = e.currentTarget.value;
 
 		if (type === 'zip' && isCharNotAllowedInZipField(char)) { return };
 
-	    this.setState({
-			[type]: e.currentTarget.value,
-			isSent: false
-		});
+		setIsSent(false);
+		setStatefun[type](val);
 	}
 
-	render() {
-
-		if (!this.props.activeShopForm) return null;
-
-		const {closeForm} = this.props;
-		const {adress, email, name, zip, isSent} = this.state;
-		const {handleTyping, submitForm, resetShopForm} = this;
-
-		return (
-				<FormStyleWrapper>
-					< Comfirmation
-						adress={adress}
-						name={name}
-						email={email}
-						isReady={!isAllValid(this.state) || !isSent}
-						/>
-					< CloseFormButton onClick={() => { resetShopForm(); closeForm() }} />
-					<label>
-						< ErrorMessage
-							value={name}
-							isSent={isSent}
-							type={'meno'}
-							isValid={validateName(name)}
-							isAllValid={isAllValid(this.state)}
-						/>
-						< Input
-							value={name}
-							onKeyUp={handleTyping}
-							type={'name'}
-							isReady={isAllValid(this.state) && isSent}
-						/>
-					</label>
-					<label>
-						< ErrorMessage
-							value={email}
-							isSent={isSent}
-							type={'email'}
-							isValid={validateEmail(email)}
-							isAllValid={isAllValid(this.state)}
-						/>
-						< Input
-							value={email}
-							onKeyUp={handleTyping}
-							type={'email'}
-							isReady={isAllValid(this.state) && isSent}
-							/>
-					</label>
-					<label>
-						< ErrorMessage
-							value={adress}
-							isSent={isSent}
-							type={'adress'}
-							isValid={validateAdress(adress)}
-							isAllValid={isAllValid(this.state)}
-						/>
-						< Input
-							value={adress}
-							onKeyUp={handleTyping}
-							type={'adress'}
-							isReady={isAllValid(this.state) && isSent}
- 						/>
-					</label>
-					<label>
-						< ErrorMessage
-							value={zip}
-							isSent={isSent}
-							type={'zip'}
-							isValid={validateZip(zip)}
-							isAllValid={isAllValid(this.state)}
-						/>
-						< Input
-							value={zip}
-							onKeyUp={handleTyping}
-							type={'zip'}
-							isReady={isAllValid(this.state) && isSent}
- 						/>
-					</label>
-					< Submit
-						submitForm={submitForm}
-						isReady={isAllValid(this.state) && isSent}
-						closeShopForm={() => { resetShopForm(); closeForm() }}
+	return (
+			<FormStyleWrapper>
+				< Comfirmation
+					adress={adress}
+					name={name}
+					email={email}
+					isReady={!isAllValid(state) || !isSent}
 					/>
-					< ClearFormButton
-						isReady={isAllValid(this.state) && isSent}
-						clearShopForm={resetShopForm}
+				< CloseFormButton onClick={() => { resetShopForm(); closeForm() }} />
+				<label>
+					< ErrorMessage
+						value={name}
+						isSent={isSent}
+						type={'meno'}
+						isValid={validateName(name)}
+						isAllValid={isAllValid(state)}
 					/>
-				</ FormStyleWrapper>
-		)
-	}
+					< Input
+						value={name}
+						onKeyUp={handleTyping}
+						type={'name'}
+						isReady={isAllValid(state) && isSent}
+					/>
+				</label>
+				<label>
+					< ErrorMessage
+						value={email}
+						isSent={isSent}
+						type={'email'}
+						isValid={validateEmail(email)}
+						isAllValid={isAllValid(state)}
+					/>
+					< Input
+						value={email}
+						onKeyUp={handleTyping}
+						type={'email'}
+						isReady={isAllValid(state) && isSent}
+						/>
+				</label>
+				<label>
+					< ErrorMessage
+						value={adress}
+						isSent={isSent}
+						type={'adress'}
+						isValid={validateAdress(adress)}
+						isAllValid={isAllValid(state)}
+					/>
+					< Input
+						value={adress}
+						onKeyUp={handleTyping}
+						type={'adress'}
+						isReady={isAllValid(state) && isSent}
+						/>
+				</label>
+				<label>
+					< ErrorMessage
+						value={zip}
+						isSent={isSent}
+						type={'zip'}
+						isValid={validateZip(zip)}
+						isAllValid={isAllValid(state)}
+					/>
+					< Input
+						value={zip}
+						onKeyUp={handleTyping}
+						type={'zip'}
+						isReady={isAllValid(state) && isSent}
+						/>
+				</label>
+				< Submit
+					submitForm={submitForm}
+					isReady={isAllValid(state) && isSent}
+					closeShopForm={() => { resetShopForm(); closeForm() }}
+				/>
+				< ClearFormButton
+					isReady={isAllValid(state) && isSent}
+					clearShopForm={resetShopForm}
+				/>
+			</ FormStyleWrapper>
+	)
+
 }
 
-ShopForm.propTypes = {
-	closeForm: PropTypes.func,
-}
 
 function ErrorMessage({type, value, isSent, isValid, isAllValid}) {
 
