@@ -3,27 +3,22 @@ import PropTypes from 'prop-types';
 import { ShopCardWrapper, ShopListWrapper, ShopCardProductWrapper } from './StyleWrappers.js';
 import { sum } from './appServices.js';
 
-export default class ShoppingCard extends React.Component {
+export const ShoppingCard = ({shoppingCard, onClick, emptyShoppingCard, openForm}) => {
 
-	render() {
+	if ( shoppingCard.length < 1 ) { return null }
 
-		const {shoppingCard, onClick, emptyShoppingCard, openForm} = this.props;
-
-		if ( shoppingCard.length < 1 ) { return null }
-
-		return (
-				< ShopCardWrapper>
-					< ShopCardName />
-					< ShopListWrapper >
-						<ShoppingCardItems
-							openForm={openForm}
-							emptyShoppingCard={emptyShoppingCard}
-							shoppingCard={shoppingCard}
-							onClick={onClick}/>
-					</ ShopListWrapper>
-				</ ShopCardWrapper>
-		)
-	}
+	return (
+			< ShopCardWrapper>
+				< ShopCardName />
+				< ShopListWrapper >
+					<ShoppingCardItems
+						openForm={openForm}
+						emptyShoppingCard={emptyShoppingCard}
+						shoppingCard={shoppingCard}
+						onClick={onClick}/>
+				</ ShopListWrapper>
+			</ ShopCardWrapper>
+	)
 }
 
 const ShopCardName = () => <h4 style={shopCardNameStyle}>Váš nákupný košík:</h4>
@@ -41,21 +36,16 @@ ShoppingCard.propTypes = {
 	openForm: PropTypes.func
 }
 
-class ShoppingCardItems extends React.Component {
+const ShoppingCardItems = ({shoppingCard, onClick, emptyShoppingCard, openForm}) => {
 
-	render() {
-
-		const {shoppingCard, onClick, emptyShoppingCard, openForm} = this.props;
-
-		return (
-			<>
-				{shoppingCard.map(i => < ShoppingCardItem item={i} onClick={onClick} key={i.name} /> )}
-				< ShoppingCardPriceAll shoppingCard={shoppingCard} />
-				< ShoppingCardEmptyAll emptyShoppingCard={emptyShoppingCard} />
-				< ShoppingCardOrderAll openForm={openForm} />
-			</>
-		)
-	}
+	return (
+		<>
+			{shoppingCard.map(i => < ShoppingCardItem item={i} onClick={onClick} key={i.name} /> )}
+			< ShoppingCardPriceAll shoppingCard={shoppingCard} />
+			< ShoppingCardEmptyAll emptyShoppingCard={emptyShoppingCard} />
+			< ShoppingCardOrderAll openForm={openForm} />
+		</>
+	)
 }
 
 const ShoppingCardPriceAll = ({shoppingCard}) => <li style={{margin: '1rem'}}>Cena spolu: {shoppingCard.reduce(sum, 0)}€</li>
@@ -68,20 +58,15 @@ const shoppingCardOrderAllStyle = {
 }
 
 
-class ShoppingCardItem extends React.Component {
+const ShoppingCardItem = ({ item, onClick }) => {
 
-	render() {
-
-		const { item, onClick } = this.props;
-
-		return (
-			< ShopCardProductWrapper>
-				< ShopCardProductCount i={item}/>
-				< ShopCardProductPrice i={item}/>
-				< ShopCardProductClose i={item} onClick={onClick}/>
-			</ ShopCardProductWrapper>
-		)
-	}
+	return (
+		< ShopCardProductWrapper>
+			< ShopCardProductCount i={item}/>
+			< ShopCardProductPrice i={item}/>
+			< ShopCardProductClose i={item} onClick={onClick}/>
+		</ ShopCardProductWrapper>
+	)
 }
 
 const ShopCardProductCount = ({i}) => <b style={{margin: '1rem'}}>{i.count}</b>

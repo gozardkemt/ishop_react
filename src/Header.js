@@ -1,32 +1,28 @@
-import React from 'react';
-import { Link } from '@reach/router'
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
+import { Link } from '@reach/router'
 import { LanguageContext } from './LanguageContext';
 
 const btnStyle = { fontSize:'0.6rem', position: 'absolute', top:'48px', left: '10px' };
+const headerStyle = {  width:'100%', background: 'skyblue', display: 'flex', flexDirection: 'row', justifyContent: 'center' };
+const headlineStyle = { fontSize:'3em'};
 
-export default class Header extends React.Component {
+export const Header = ({ onChange, activeFilterBar, changeLang }) => {
 
- render() {
+	const trans = useContext(LanguageContext);
 
-		const { onChange, activeFilterBar, changeLang } = this.props;
-		const headerStyle = {  width:'100%', background: 'skyblue', display: 'flex', flexDirection: 'row', justifyContent: 'center' };
-		const headlineStyle = { fontSize:'3em'};
+	return (
 
-		const trans = this.context;
+		<header style={headerStyle}>
+		  <button onClick={onChange} style={btnStyle} type='button'>
+		  	{ activeFilterBar ? trans['hide filters'].toUpperCase() : trans['show filters'].toUpperCase()  }
+		  </button>
+		  <Link style={headlineStyle} to="/">{trans['istore slovakia']}</ Link>
+		  <LangButton changeLang={changeLang}/>
+		</header>
 
-		return (
+	)
 
-			<header style={headerStyle}>
-			  <button onClick={onChange} style={btnStyle} type='button'>
-			  	{ activeFilterBar ? trans['hide filters'].toUpperCase() : trans['show filters'].toUpperCase()  }
-			  </button>
-			  <Link style={headlineStyle} to="/">{trans['istore slovakia']}</ Link>
-			  <LangButton changeLang={changeLang}/>
-			</header>
-
-		)
-	}
 }
 
 Header.propTypes = {
@@ -35,20 +31,14 @@ Header.propTypes = {
 	lang: PropTypes.string
 }
 
-class LangButton extends React.Component {
+const LangButton = ({ changeLang }) => {
 
-	render() {
+	const trans = useContext(LanguageContext);
 
-		const trans = this.context;
-		const { changeLang } = this.props;
+	return (
+		<button style={{...btnStyle, top: '10px'}} type='button' onClick={changeLang}>
+		  { trans['switch lang'].toUpperCase() }
+		</button>
+	)
 
-		return (
-			<button style={{...btnStyle, top: '10px'}} type='button' onClick={changeLang}>
-			  { trans['switch lang'].toUpperCase() }
-			</button>
-		)
-	}
 }
-
-LangButton.contextType = LanguageContext;
-Header.contextType = LanguageContext;
