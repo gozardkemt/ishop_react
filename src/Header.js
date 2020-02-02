@@ -1,47 +1,28 @@
-import React from 'react';
-<<<<<<< HEAD
+import React, { useContext} from 'react';
+import { LanguageContext } from './LanguageContext';
+import { Link } from '@reach/router'
+import PropTypes from 'prop-types';
 
-export default function Header() {
+const btnStyle = { fontSize:'0.6rem', position: 'absolute', top:'48px', left: '10px' };
+const headerStyle = {  width:'100%', background: 'skyblue', display: 'flex', flexDirection: 'row', justifyContent: 'center' };
+const headlineStyle = { fontSize:'3em'};
 
-	const headerStyle = { fontSize:'3em', width:'100%', textAlign: 'center', background: 'skyblue' };
+export const Header = ({ onChange, activeFilterBar, changeLang }) => {
+
+	const trans = useContext(LanguageContext);
 
 	return (
 
 		<header style={headerStyle}>
-		  iStore Slovakia w/React
+		  <button onClick={onChange} style={btnStyle} type='button'>
+		  	{ activeFilterBar ? trans['hide filters'].toUpperCase() : trans['show filters'].toUpperCase()  }
+		  </button>
+		  <Link style={headlineStyle} to="/">{trans['istore slovakia']}</ Link>
+		  <LangButton changeLang={changeLang}/>
 		</header>
 
 	)
-}
-=======
-import { Link } from '@reach/router'
-import PropTypes from 'prop-types';
-import { LanguageContext } from './LanguageContext';
 
-const btnStyle = { fontSize:'0.6rem', position: 'absolute', top:'48px', left: '10px' };
-
-export default class Header extends React.Component {
-
- render() {
-
-		const { onChange, activeFilterBar, changeLang } = this.props;
-		const headerStyle = {  width:'100%', background: 'skyblue', display: 'flex', flexDirection: 'row', justifyContent: 'center' };
-		const headlineStyle = { fontSize:'3em'};
-
-		const trans = this.context;
-
-		return (
-
-			<header style={headerStyle}>
-			  <button onClick={onChange} style={btnStyle} type='button'>
-			  	{ activeFilterBar ? trans['hide filters'].toUpperCase() : trans['show filters'].toUpperCase()  }
-			  </button>
-			  <Link style={headlineStyle} to="/">{trans['istore slovakia']}</ Link>
-			  <LangButton changeLang={changeLang}/>
-			</header>
-
-		)
-	}
 }
 
 Header.propTypes = {
@@ -50,21 +31,17 @@ Header.propTypes = {
 	lang: PropTypes.string
 }
 
-class LangButton extends React.Component {
+const LangButton = ({ changeLang }) => {
 
-	render() {
+	const trans = useContext(LanguageContext);
 
-		const trans = this.context;
-		const { changeLang } = this.props;
+	return (
+		<button style={{...btnStyle, top: '10px'}} type='button' onClick={changeLang}>
+		  { trans['switch lang'].toUpperCase() }
+		</button>
+	)
 
-		return (
-			<button style={{...btnStyle, top: '10px'}} type='button' onClick={changeLang}>
-			  { trans['switch lang'].toUpperCase() }
-			</button>
-		)
-	}
 }
 
 LangButton.contextType = LanguageContext;
 Header.contextType = LanguageContext;
->>>>>>> classed

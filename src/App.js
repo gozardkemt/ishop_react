@@ -1,250 +1,144 @@
-import React from 'react';
-import Header from './Header.js';
-import Content from './Content.js';
-import FilterBar from './FilterBar.js';
-import ShoppingCard from './ShoppingCard.js';
-import ShopForm from './ShopForm.js';
-import ProductDetail from './ProductDetail.js';
+import React, {useState, useRef, useEffect} from 'react';
+import { Header } from './Header.js';
+import { Content } from './Content.js';
+import { FilterBar } from './FilterBar.js';
+import { ShoppingCard } from './ShoppingCard.js';
+import { ShopForm } from './ShopForm.js';
+import { ProductDetail } from './ProductDetail.js';
 import { Router } from '@reach/router';
 import { LanguageContext, translation } from './LanguageContext';
 import { getIndexOfProduct, getTargetValue, getClickedProduct } from './appServices.js';
 
-const defaultState = {
+export const App = () =>  {
 
-	// fetch data
-	products: [],
-	categories: [],
+	const	[products, setProducts] = useState([]);
+	const	[categories, setCategories] = useState([]),
+	 		[isProductsLoading, setIsProductsLoading] = useState(true),
+	 		[isCategoriesLoading, setIsCategoriesLoading] = useState(true),
+	 		[isError, setIsError] = useState(false),
+	 		[activeFilterBar, setActiveFilterBar] = useState(false),
+	 		[priceRange, setPriceRange] = useState([0, Infinity]),
+	 		[textQuery, setTextQuery] = useState(''),
+	 		[activeCategoryId, setActiveCategoryId] = useState('0'),
+	 		[activeShopForm, setActiveShopForm] = useState(false),
+	 		[shoppingCard, setShoppingCard] = useState([]),
+	 		[lang, setLang] = useState('sk');
 
-	// data loading
-	isProductsLoading: true,
-	isCategoriesLoading: true,
-	isError: false,
 
-	// user filter interaction
-	activeFilterBar: false,
-	priceRange: [0, Infinity],
-	textQuery: '',
-	activeCategoryId: '0',
+	const minFilterRef = useRef(null);
+	const maxFilterRef = useRef(null);
+	const optionFilterRef = useRef(null);
+	const setFilterQuery = e => setTextQuery(getTargetValue(e));
 
-	// user buying interaction
-	activeShopForm: false,
-	shoppingCard: [],
+	const setMinPriceRange = e => setPriceRange([
+		parseInt(getTargetValue(e)) || 0,
+		priceRange[1]
+	])
 
-	// others
-	lang: 'sk'
-}
+	const setMaxPriceRange = e => setPriceRange([
+		priceRange[0],
+		parseInt(getTargetValue(e)) || Infinity
+	])
 
-export default class App extends React.Component {
+	const toggleFilterBar = () => setActiveFilterBar(!activeFilterBar);
+	const changeActiveCategoryId = e => setActiveCategoryId(e.currentTarget.selectedOptions[0].id)
 
-	constructor(props) {
-		super(props)
-
-		this.minFilterRef = React.createRef();
-		this.maxFilterRef = React.createRef();
-		this.optionFilterRef = React.createRef();
-
-		this.state = defaultState;
-	}
-
-	setTextQuery = e => { this.setState({ textQuery: getTargetValue(e) }) }
-
-	setMinPriceRange = e => {
-		this.setState({
-			priceRange: [
-				parseInt(getTargetValue(e)) || 0,
-				this.state.priceRange[1]
-			]
-		})
-	}
-
-	setMaxPriceRange = e => {
-		this.setState({
-			priceRange: [
-				this.state.priceRange[0],
-				parseInt(getTargetValue(e)) || Infinity
-			]
-		})
-	}
-
-	toggleFilterBar = () => {
-		this.setState({
-			activeFilterBar: !this.state.activeFilterBar,
-		})
-	}
-
-	changeActiveCategoryId = e => {
-		this.setState({
-			activeCategoryId: e.currentTarget.selectedOptions[0].id
-		})
-	}
-
-	handleButtonClick = e => {
+	const handleButtonClick = e => {
 		const clicked = getClickedProduct(e);
-		const index = getIndexOfProduct(clicked, this.state.shoppingCard);
+		const index = getIndexOfProduct(clicked, shoppingCard);
 
 		if (index !== -1) {
-			this.increaseCount(index)
+			increaseCount(index)
 		} else {
-			this.addItemToCard(clicked)
+			addItemToCard(clicked)
 		}
 	}
 
-	addItemToCard = clicked => {
-		this.setState({
-			shoppingCard: this.state.shoppingCard.concat(clicked)
-		})
+	const addItemToCard = clicked => setShoppingCard(shoppingCard.concat(clicked))
+
+	const increaseCount = index => {
+		setShoppingCard(shoppingCard.map((p,i) => {
+			if (i === index) { p.count++ }
+			return p
+		}
+	))
 	}
 
-	increaseCount = index => {
-		this.setState(
-			state => {
-				state.shoppingCard.forEach((p,i) => { if (i === index) { p.count++ } else return })
+	const handleRemoveClick = e => {
 
-				return {
-					shoppingCard: state.shoppingCard
-				}
-			}
-		)
-	}
-
-	handleRemoveClick = e => {
-
-		const card = this.state.shoppingCard;
 		const clicked = getClickedProduct(e);
-		const index = getIndexOfProduct(clicked, card);
-		const count = card[index].count;
+		const index = getIndexOfProduct(clicked, shoppingCard);
+		const count = shoppingCard[index].count;
 
 		if (count < 2) {
-			this.removeItemFromCard(clicked)
+			removeItemFromCard(clicked)
 		} else {
-			this.decreaseCount(index)
+			decreaseCount(index)
 		}
 	}
 
-	decreaseCount = index => {
-		this.setState(
-			state => {
-				state.shoppingCard.forEach((p,i) => {if (i === index) { p.count-- } else return })
-
-				return {
-					shoppingCard: state.shoppingCard
-				}
-			}
-		)
+	const decreaseCount = index => {
+		setShoppingCard(shoppingCard.map((p,i) => {
+			if (i === index) { p.count-- }
+			return p
+		}
+	))
 	}
 
-	removeItemFromCard = clicked => {
-		this.setState({
-			shoppingCard: this.state.shoppingCard.filter((p) => p.name !== clicked.name || p.src !== clicked.src),
-			activeShopForm: this.state.shoppingCard === [] ? this.state.activeShopForm : false
-		})
+	const removeItemFromCard = clicked => {
+		setShoppingCard(shoppingCard.filter((p) => p.name !== clicked.name || p.src !== clicked.src));
+		setActiveShopForm(shoppingCard === [] ? activeShopForm : false)
 	}
 
-	emptyShoppingCard = () => {
-		this.setState({
-			shoppingCard: [],
-			activeShopForm: false
-		})
+	const emptyShoppingCard = () => {
+		setShoppingCard([]);
+		setActiveShopForm(false)
 	}
 
-	toggleForm = () => {
-		this.setState({
-			activeShopForm: !this.state.activeShopForm
-		})
+	const toggleForm = () => setActiveShopForm(!activeShopForm);
+
+	const clearAllFilters = () => {
+
+		optionFilterRef.current.value = 'all';
+		minFilterRef.current.value = '';
+		maxFilterRef.current.value = '';
+
+		setPriceRange([0, Infinity]);
+		setActiveCategoryId('0');
+		setTextQuery('');
 	}
 
-	clearAllFilters = () => {
+	const changeLang = () => setLang(lang === 'sk' ? 'en' : 'sk')
 
-		this.optionFilterRef.current.value = 'all';
-		this.minFilterRef.current.value = '';
-		this.maxFilterRef.current.value = '';
-
-		this.setState({
-			priceRange: [0, Infinity],
-			activeCategoryId: '0',
-			textQuery: ''
-		})
-	}
-
-	changeLang = () => {
-
-		this.setState({
-			lang: this.state.lang === 'sk' ? 'en' : 'sk'
-		})
-	}
-
-	componentDidMount() {
-
-		fetch("http://localhost:8080/categories.json")
+	useEffect( () => {
+		fetch("./data/categories.json")
 			.then( res => res.json())
 			.then(
 				(res) => {
-					this.setState({
-						isCategoriesLoading: false,
-						categories: res
-					})
+					setIsCategoriesLoading(false);
+					setCategories(res);
 				},
 				(err) => {
-					console.log(err);
-					this.setState({
-						isLoading: false,
-						isError: true
-					})
-				}
- 			)
+					console.log(err)
+					setIsCategoriesLoading(false);
+					setIsError(true);
+					}
+				)
 
-		fetch("http://localhost:8080/products.json")
+		fetch("./data/products.json")
 			.then( res => res.json())
 			.then(
 				(res) => {
-					this.setState({
-						isLoading: false,
-						products: res
-					})
+					setIsProductsLoading(false);
+					setProducts(res);
 				},
 				(err) => {
-					console.log(err);
-					this.setState({
-						isProductsLoading: false,
-						isError: true
-					})
-				}
+					console.log(err)
+					setIsProductsLoading(false);
+					setIsError(true);
+					}
  			)
-	}
-
-	render() {
-
-		const {
-			products,
-			categories,
-			isError,
-			isCategoriesLoading,
-			isProductsLoading,
-			activeCategoryId:id,
-			shoppingCard:card,
-			activeShopForm:form,
-			activeFilterBar:filter,
-			priceRange:range,
-			textQuery,
-			lang
-		} = this.state;
-
-		const {
-			changeActiveCategoryId,
-			handleRemoveClick,
-			handleButtonClick,
-			emptyShoppingCard,
-			toggleForm,
-			toggleFilterBar,
-			setMaxPriceRange,
-			setMinPriceRange,
-			clearAllFilters,
-			setTextQuery,
-			minFilterRef,
-			maxFilterRef,
-			optionFilterRef,
-			changeLang
-		} = this;
+	}, [])
 
 
 		if ( isProductsLoading && isCategoriesLoading ) { return <span>loading... please wait</span> }
@@ -254,11 +148,11 @@ export default class App extends React.Component {
 		    < LanguageContext.Provider value={translation[lang]}>
 			  < Header
 			  		onChange={toggleFilterBar}
-					activeFilterBar={filter}
+					activeFilterBar={activeFilterBar}
 					changeLang={changeLang}
 			  		/>
 			  < FilterBar
-			  		activeFilterBar={filter}
+			  		activeFilterBar={activeFilterBar}
 					onChange={changeActiveCategoryId}
 					setPriceRange={{
 						min: setMinPriceRange,
@@ -266,7 +160,7 @@ export default class App extends React.Component {
 					}}
 					categories={categories}
 					clearAllFilters={clearAllFilters}
-					setTextQuery={setTextQuery}
+					setTextQuery={setFilterQuery}
 					textQuery={textQuery}
 					setRefs={{
 						min: minFilterRef,
@@ -276,28 +170,28 @@ export default class App extends React.Component {
 					/>
 				< ShoppingCard
 			  		emptyShoppingCard={emptyShoppingCard}
-					shoppingCard={card}
+					shoppingCard={shoppingCard}
 					onClick={handleRemoveClick}
 					openForm={toggleForm}
 					/>
 				< ShopForm
-			  		shoppingCard={card}
-					activeShopForm={form}
+			  		shoppingCard={shoppingCard}
+					activeShopForm={activeShopForm}
 					closeForm={toggleForm}
 					/>
 				< Router >
 					< Content
-				  		card={card}
-						priceRange={range}
+				  		card={shoppingCard}
+						priceRange={priceRange}
 				  		onClick={handleButtonClick}
-						activeCategoryId={id}
+						activeCategoryId={activeCategoryId}
 						categories={categories}
 						products={products}
 						textQuery={textQuery}
 						path={"/"}
 						/>
 					< ProductDetail
-						card={card}
+						card={shoppingCard}
 						onClick={handleButtonClick}
 						path={"/product/:productId"}
 						products={products}
@@ -306,5 +200,5 @@ export default class App extends React.Component {
 				</ Router >
 		    </ LanguageContext.Provider >
 		)
-  	}
+
 }

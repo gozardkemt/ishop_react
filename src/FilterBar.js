@@ -1,47 +1,35 @@
-import React from 'react';
-import Selection from './Selection.js';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
+import { Selection } from './Selection.js';
 import { SectionWrapper } from './StyleWrappers.js';
 import { LanguageContext } from './LanguageContext';
 
 
-export default class FilterBar extends React.Component {
+export const FilterBar = ({ activeFilterBar,categories, onChange, setPriceRange, clearAllFilters, setTextQuery, textQuery, setRefs}) => {
 
-	render() {
+	if (activeFilterBar) { return null };
 
-		if (!this.props.activeFilterBar) { return null };
+	return (
+		< SectionWrapper>
+			< Selection
+				  onChange={onChange}
+				  categories={categories}
+				  setRefs={setRefs}
+			  />
+			< PriceRange
+				  setPriceRange={setPriceRange}
+				  setRefs={setRefs}
+			  />
+			< TextFilter
+				setTextQuery={setTextQuery}
+				textQuery={textQuery}
+			/>
+			< ClearFilterButton
+				onClick={clearAllFilters}
+			/>
+		</ SectionWrapper>
+	)
 
-		const {
-			categories,
-			onChange,
-			setPriceRange,
-			clearAllFilters,
-			setTextQuery,
-			textQuery,
-			setRefs
-		} = this.props;
-
-		return (
-			< SectionWrapper>
-				< Selection
-					  onChange={onChange}
-					  categories={categories}
-					  setRefs={setRefs}
-				  />
-				< PriceRange
-					  setPriceRange={setPriceRange}
-					  setRefs={setRefs}
-				  />
-				< TextFilter
-					setTextQuery={setTextQuery}
-					textQuery={textQuery}
-				/>
-				< ClearFilterButton
-					onClick={clearAllFilters}
-				/>
-			</ SectionWrapper>
-		)
-	}
 }
 
 FilterBar.propTypes = {
@@ -56,61 +44,44 @@ FilterBar.propTypes = {
 
 // dumb components
 
-class ClearFilterButton extends React.Component {
+const ClearFilterButton = ({onClick}) =>{
 
-	render() {
-
-		return	(
-				<button style={{float: 'right'}} type='button' onClick={this.props.onClick}>
-					{ this.context['clear filters'] }
-				</button>
-			)
-		}
-
+	return	(
+			<button style={{float: 'right'}} type='button' onClick={onClick}>
+				{ useContext(LanguageContext)['clear filters'] }
+			</button>
+		)
 }
 
 ClearFilterButton.propTypes = { clearAllFilters: PropTypes.func }
 
 
-class TextFilter extends React.Component {
+const TextFilter = ({setTextQuery, textQuery}) => {
 
-	render() {
-
-		const {setTextQuery, textQuery} = this.props;
-
-		return (
-			<>
-				<label> {this.context['text filter']} </label>
-				<input value={textQuery} onChange={setTextQuery} id='textFilter'></input>
-			</>
-		)
-	}
+	return (
+		<>
+			<label> {useContext(LanguageContext)['text filter']} </label>
+			<input value={textQuery} onChange={setTextQuery} id='textFilter'></input>
+		</>
+	)
 
 }
 
 
 TextFilter.propTypes = { setTextQuery: PropTypes.func, textQuery: PropTypes.string }
 
-class PriceRange extends React.Component {
+const PriceRange = ({ setPriceRange, setRefs }) => {
 
-	render() {
+	const trans = useContext(LanguageContext);
 
-		const {setPriceRange, setRefs} = this.props;
-		const trans = this.context;
-
-		return (
-			<>
-				<label> {trans['price filter']} </label>
-				<input onChange={setPriceRange.min} ref={setRefs.min} id='minFilter' placeholder={trans['from']}></input>
-				<input onChange={setPriceRange.max} ref={setRefs.max} id='maxFilter' placeholder={trans['to']}></input>
-			</>
-		)
-	}
-
+	return (
+		<>
+			<label> {trans['price filter']} </label>
+			<input onChange={setPriceRange.min} ref={setRefs.min} id='minFilter' placeholder={trans['from']}></input>
+			<input onChange={setPriceRange.max} ref={setRefs.max} id='maxFilter' placeholder={trans['to']}></input>
+		</>
+	)
 }
 
-ClearFilterButton.contextType = LanguageContext;
-TextFilter.contextType = LanguageContext;
-PriceRange.contextType = LanguageContext;
 
 PriceRange.propTypes = { setPriceRange: PropTypes.object }

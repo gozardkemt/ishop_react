@@ -4,38 +4,38 @@ import { ContentWrapper, ProductWrapper } from './StyleWrappers.js';
 import { ProductPrice, ProductCategory, ProductImg, Button } from './ProductDetail.js';
 import { Link } from '@reach/router'
 
-export default class Content extends React.Component {
+export const Content = ({products, categories, activeCategoryId, onClick, card, priceRange, textQuery}) => {
 
-	render() {
+	const filteredProducts = products
+		.filter(p => priceRange[0] <= p.price && p.price <= priceRange[1])
+		.filter(p => p.name.toLowerCase().includes(textQuery.toLowerCase()))
+		.filter(p => {
+			if ( activeCategoryId === '0' ) { return true }
+			return p.categoryId === activeCategoryId}
+		);
 
-		const {products, categories, activeCategoryId, onClick, card, priceRange, textQuery} = this.props;
+	if (filteredProducts.length < 1) {
 
-		const filterByPrice = products.filter(p => priceRange[0] <= p.price && p.price <= priceRange[1]);
-		const filterByText = filterByPrice.filter(p => p.name.toLowerCase().includes(textQuery.toLowerCase()));
-		const filteredProducts = activeCategoryId === '0' ? filterByText : filterByText.filter(p => p.categoryId === activeCategoryId);
-
-		if (filteredProducts.length < 1) {
-
-			return  (
-				<div style={{textAlign:'center'}}>
-					<h3>Podmienky bohužial nespĺňa žiadny produkt</h3>
-				</div>
-			);
-		}
-
-		return (
-			<ContentWrapper>
-				{ filteredProducts.map( product =>
-					< Product key={product.name}
-						card={card}
-						onClick={onClick}
-						product={product}
-						categories={categories}
-						activeCategoryId={activeCategoryId} />
-				)}
-			</ContentWrapper>
-		)
+		return  (
+			<div style={{textAlign:'center'}}>
+				<h3>Podmienky bohužial nespĺňa žiadny produkt</h3>
+			</div>
+		);
 	}
+
+	return (
+		<ContentWrapper>
+			{ filteredProducts.map( product =>
+				< Product key={product.name}
+					card={card}
+					onClick={onClick}
+					product={product}
+					categories={categories}
+					activeCategoryId={activeCategoryId} />
+			)}
+		</ContentWrapper>
+	)
+
 }
 
 Content.propTypes = {
@@ -48,23 +48,19 @@ Content.propTypes = {
 	textQuery: PropTypes.string,
 }
 
-class Product extends React.Component {
+const Product = ({ product, categories, onClick, card}) => {
 
-	render() {
+	const { name, price, categoryId, thumbnail, productId } = product;
+	if (!thumbnail) {return null}
 
-		const {product, categories, onClick, card} = this.props;
-		const {name, price, categoryId, thumbnail, productId} = product;
+	return (
+		< ProductWrapper>
+			< Link className='name' to={'product/' + productId} >{name}</Link>
+			< ProductPrice price={price} />
+			< ProductCategory categoryId={categoryId} categories={categories} />
+			< ProductImg src={thumbnail} />
+			< Button card={card} product={product} onClick={onClick} />
+		</ ProductWrapper>
+	)
 
-		if (!thumbnail) {return null}
-
-		return (
-			< ProductWrapper>
-				< Link className='name' to={'product/' + productId} >{name}</Link>
-				< ProductPrice price={price} />
-				< ProductCategory categoryId={categoryId} categories={categories} />
-				< ProductImg src={thumbnail} />
-				< Button card={card} product={product} onClick={onClick} />
-			</ ProductWrapper>
-		)
-	}
 }

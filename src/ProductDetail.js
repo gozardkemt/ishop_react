@@ -1,27 +1,24 @@
 import React from 'react';
-import { Link } from '@reach/router';
 import { getProductFromId, getCategoryNamefromCategoryId } from './appServices.js';
 import { ProductWrapper } from './StyleWrappers.js';
+import { Link } from '@reach/router';
 
-export default class ProductDetail extends React.Component {
+export const ProductDetail = ({ productId, products, categories, onClick, card }) => {
 
-	render() {
+	const product = getProductFromId(productId, products);
+	const { thumbnail:src, price, name, categoryId } = product;
 
-		const { productId, products, categories, onClick, card } = this.props;
-		const product = getProductFromId(productId, products);
-		const { thumbnail:src, price, name, categoryId } = product;
+	return 	(
+		< ProductWrapper>
+			<strong>{name}</strong>
+			< ProductPrice price={price}/>
+			< ProductCategory categoryId={categoryId} categories={categories} />
+			< ProductImg src={src} />
+			< Button card={card} onClick={onClick} product={product}/>
+			< Link to="/" style={{marginLeft:'auto', padding: '1rem'}}>Späť</Link>
+		</ ProductWrapper>
+	)
 
-		return 	(
-			< ProductWrapper>
-				<strong>{name}</strong>
-				< ProductPrice price={price}/>
-				< ProductCategory categoryId={categoryId} categories={categories} />
-				< ProductImg src={src} />
-				< Button card={card} onClick={onClick} product={product}/>
-				< Link to="/" style={{marginLeft:'auto', padding: '1rem'}}>Späť</Link>
-			</ ProductWrapper>
-		)
-	}
 }
 
 export const ProductPrice = props => <span className='price'>Cena: {props.price}€</span>
